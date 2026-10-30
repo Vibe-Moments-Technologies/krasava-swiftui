@@ -31,14 +31,14 @@ enum ICalParser {
     static func parse(_ raw: String) -> Feed {
         var feed = Feed()
         var currentProps: [String: [String]] = [:]
-        var blockName: String?
+        var currentBlock: String?
 
         for line in unfoldedLines(raw) {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             if trimmed.isEmpty { continue }
 
             if let begin = blockName(of: trimmed, prefix: "BEGIN:") {
-                blockName = begin
+                currentBlock = begin
                 currentProps.removeAll(keepingCapacity: true)
                 continue
             }
@@ -52,11 +52,11 @@ enum ICalParser {
                 default:
                     break
                 }
-                blockName = nil
+                currentBlock = nil
                 currentProps.removeAll(keepingCapacity: true)
                 continue
             }
-            guard blockName != nil, let property = parseProperty(trimmed) else { continue }
+            guard currentBlock != nil, let property = parseProperty(trimmed) else { continue }
             currentProps[property.name, default: []].append(property.value)
         }
 

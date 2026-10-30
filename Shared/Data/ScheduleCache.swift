@@ -83,7 +83,7 @@ struct AppFileStorage: Sendable {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.withoutEscapingSlashes]
         let data = try encoder.encode(value)
-        try ensureDirectory(url.deletingLastPathComponent())
+        _ = try ensureDirectory(url.deletingLastPathComponent())
         try data.write(to: url, options: .atomic)
     }
 

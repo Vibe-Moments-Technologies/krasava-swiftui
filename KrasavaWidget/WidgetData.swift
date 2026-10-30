@@ -41,7 +41,7 @@ enum WidgetTimelineBuilder {
     /// Шаг полосы прогресса идущей пары.
     static let progressStepMinutes = 15
 
-    static func entries(now: Date = Date(), calendar: Calendar = ScheduleClock.calendar) -> [TimelineEntry] {
+    static func entries(now: Date = Date(), calendar: Calendar = ScheduleClock.calendar) -> [ScheduleWidgetEntry] {
         var moments: [Date] = [now]
 
         if case .ok(let snapshot) = WidgetData.load() {
@@ -89,7 +89,7 @@ enum WidgetTimelineBuilder {
         }
 
         return chosen.prefix(maxEntries).map { moment in
-            TimelineEntry(date: moment, presentation: presentation(at: moment, calendar: calendar))
+            ScheduleWidgetEntry(date: moment, presentation: presentation(at: moment, calendar: calendar))
         }
     }
 

@@ -3,7 +3,7 @@ import WidgetKit
 
 /// Представление виджета по размеру.
 struct ScheduleWidgetView: View {
-    let entry: TimelineEntry
+    let entry: ScheduleWidgetEntry
 
     @Environment(\.widgetFamily) private var family
 

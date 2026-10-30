@@ -2,18 +2,18 @@ import SwiftUI
 import WidgetKit
 
 /// Запись таймлайна: готовое состояние на конкретный момент.
-struct TimelineEntry: TimelineEntry {
+struct ScheduleWidgetEntry: TimelineEntry {
     let date: Date
     let presentation: WidgetPresentation?
 }
 
 /// Провайдер виджета расписания.
 struct ScheduleProvider: TimelineProvider {
-    func placeholder(in context: Context) -> TimelineEntry {
-        TimelineEntry(date: Date(), presentation: nil)
+    func placeholder(in context: Context) -> ScheduleWidgetEntry {
+        ScheduleWidgetEntry(date: Date(), presentation: nil)
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (TimelineEntry) -> Void) {
+    func getSnapshot(in context: Context, completion: @escaping (ScheduleWidgetEntry) -> Void) {
         let now = Date()
         let presentation: WidgetPresentation?
         if case .ok(let snapshot) = WidgetData.load() {
@@ -21,10 +21,10 @@ struct ScheduleProvider: TimelineProvider {
         } else {
             presentation = nil
         }
-        completion(TimelineEntry(date: now, presentation: presentation))
+        completion(ScheduleWidgetEntry(date: now, presentation: presentation))
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<TimelineEntry>) -> Void) {
+    func getTimeline(in context: Context, completion: @escaping (Timeline<ScheduleWidgetEntry>) -> Void) {
         let entries = WidgetTimelineBuilder.entries()
         // `.atEnd` — система вернётся за новым таймлайном после последней записи.
         completion(Timeline(entries: entries, policy: .atEnd))
