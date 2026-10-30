@@ -160,23 +160,36 @@ struct ScheduleBuilderTests {
 @Suite("Заметки")
 struct NotesRegressionTests {
 
-    private func lessons(from feed: ICalParser.Feed, around day: DayKey) -> [Lesson] {
+    /// Занятие конкретного предмета строго на указанный день.
+    ///
+    /// Раньше здесь был `lessonsByDay().values.flatMap { $0 }` — а словарь не
+    /// гарантирует порядок обхода, поэтому «первое попавшееся» занятие в двух
+    /// прогонах могло оказаться в разные дни, и ключи заметки законно
+    /// расходились. Тест падал не из-за продукта, а из-за недетерминированного
+    /// выбора элемента.
+    private func lesson(
+        subject: String,
+        on day: DayKey,
+        in feed: ICalParser.Feed
+    ) -> Lesson? {
         ScheduleBuilder(
             occurrences: feed.occurrences,
             window: ScheduleBuilder.Window.around(day)
-        ).lessonsByDay().values.flatMap { $0 }
+        )
+        .lessonsByDay()[day]?
+        .first { $0.subject == subject }
     }
 
     @Test("Ключ заметки не зависит от UID события")
     func keySurvivesUIDRotation() throws {
         let day = DayKey(year: 2026, month: 9, day: 14)
+        let subject = "Конфигурационное управление"
+
         let original = try #require(
-            lessons(from: ICalParser.parse(Fixtures.feedSample), around: day)
-                .first { $0.subject == "Конфигурационное управление" }
+            lesson(subject: subject, on: day, in: ICalParser.parse(Fixtures.feedSample))
         )
         let rotated = try #require(
-            lessons(from: ICalParser.parse(Fixtures.feedSampleWithRotatedUIDs), around: day)
-                .first { $0.subject == "Конфигурационное управление" }
+            lesson(subject: subject, on: day, in: ICalParser.parse(Fixtures.feedSampleWithRotatedUIDs))
         )
 
         // UID действительно поменялся — иначе тест ничего не проверял бы.
