@@ -10,6 +10,7 @@ on:
     paths:
       - 'KrasavaSwiftUI/**'
       - 'KrasavaWidget/**'
+      - 'KrasavaSwiftUITests/**'
       - 'Shared/**'
       - 'Support/**'
       - 'KrasavaSwiftUI.xcodeproj/**'
@@ -60,6 +61,37 @@ jobs:
 
       - name: 🛠️ Select Xcode 26
         uses: ./.github/actions/select-xcode-26
+
+      # Тесты гоняются и здесь, а не только в CI: CI пропускает ветку main,
+      # поэтому без этого шага push в main не проверял бы тесты вообще.
+      - name: 📱 Pick a simulator
+        id: sim
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)['devices']
+          for runtime in sorted(data, reverse=True):
+              for device in data[runtime]:
+                  if 'iPhone' in device['name']:
+                      print(device['udid'])
+                      raise SystemExit
+          ")
+          if [ -z "$UDID" ]; then
+            echo "::error::Доступных симуляторов iPhone нет."
+            exit 1
+          fi
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+
+      - name: 🧪 Run tests
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project KrasavaSwiftUI.xcodeproj \
+            -scheme KrasavaSwiftUI \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO
 
       - name: 🔨 Build app (no codesign)
         env:
