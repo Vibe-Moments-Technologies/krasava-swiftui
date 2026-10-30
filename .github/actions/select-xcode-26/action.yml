@@ -1,0 +1,41 @@
+name: 🛠️ Select Xcode 26
+
+# Общий шаг выбора Xcode: образ макос-26 приносит несколько версий Xcode, и
+# нужна старшая с SDK iOS 26. Дублировать этот поиск в каждом воркфлоу
+# бессмысленно — расхождения между копиями уже приводили к тому, что один
+# воркфлоу собирался, а другой нет.
+description: Выбрать Xcode с SDK iOS 26 и напечатать окружение
+
+runs:
+  using: composite
+  steps:
+    - name: 🛠️ Select Xcode 26
+      shell: bash
+      run: |
+        set -euo pipefail
+        BEST=""
+        BEST_VERSION="0"
+        for APP in /Applications/Xcode*.app; do
+          [ -d "$APP" ] || continue
+          VERSION=$(defaults read "$APP/Contents/Info" CFBundleShortVersionString 2>/dev/null || echo "0")
+          case "$VERSION" in
+            26.*)
+              if [ "$(printf '%s\n%s\n' "$BEST_VERSION" "$VERSION" | sort -V | tail -n 1)" = "$VERSION" ]; then
+                BEST="$APP"
+                BEST_VERSION="$VERSION"
+              fi
+              ;;
+          esac
+        done
+
+        if [ -z "$BEST" ]; then
+          echo "::error::Xcode 26 не найден на раннере."
+          ls -d /Applications/Xcode*.app || true
+          exit 1
+        fi
+
+        sudo xcode-select -s "$BEST/Contents/Developer"
+        echo "==> Выбран $BEST ($BEST_VERSION)"
+        xcodebuild -version
+        echo "--- доступные SDK ---"
+        xcodebuild -showsdks || true

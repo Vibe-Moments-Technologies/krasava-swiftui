@@ -60,26 +60,7 @@ jobs:
           ref: ${{ github.event_name == 'push' && github.ref || 'main' }}
 
       - name: 🛠️ Select Xcode 26
-        run: |
-          FOUND=""
-          for APP in /Applications/Xcode_26*.app /Applications/Xcode.app; do
-            if [ -d "$APP" ]; then
-              VERSION=$(defaults read "$APP/Contents/Info" CFBundleShortVersionString 2>/dev/null || echo "0")
-              case "$VERSION" in
-                26.*) sudo xcode-select -s "$APP/Contents/Developer"; FOUND="$APP"; break ;;
-              esac
-            fi
-          done
-          if [ -z "$FOUND" ]; then
-            echo "::error::Xcode 26 не найден на раннере."
-            ls -d /Applications/Xcode*.app || true
-            exit 1
-          fi
-          xcodebuild -version
-          echo '--- installed SDKs ---'
-          xcodebuild -showsdks || true
-          echo '--- installed platforms ---'
-          xcodebuild -showComponentPlatforms 2>/dev/null || true
+        uses: ./.github/actions/select-xcode-26
 
       - name: 📱 Pick a simulator
         id: sim
@@ -93,6 +74,10 @@ jobs:
                       print(device['udid'])
                       raise SystemExit
           ")
+          if [ -z "$UDID" ]; then
+            echo "::error::Доступных симуляторов iPhone нет."
+            exit 1
+          fi
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
 
       - name: 🧪 Run tests
@@ -104,65 +89,25 @@ jobs:
             -destination "id=${{ steps.sim.outputs.udid }}" \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            -quiet
+            CODE_SIGNING_REQUIRED=NO
 
       - name: 🔨 Build app (no codesign)
         env:
-          VERSION: ${{ needs.resolve.outputs.version }}
-          BUILD_ID: ${{ needs.resolve.outputs.build_id }}
-        run: |
-          xcodebuild build \
-            -project KrasavaSwiftUI.xcodeproj \
-            -scheme KrasavaSwiftUI \
-            -configuration Release \
-            -sdk iphoneos \
-            -derivedDataPath build \
-            MARKETING_VERSION="$VERSION" \
-            CURRENT_PROJECT_VERSION="$BUILD_ID" \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            DEBUG_INFORMATION_FORMAT=dwarf-with-dsym \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            -quiet
-
-      - name: 🔏 Ad-hoc подпись с entitlements (App Group для виджета)
-        # ad-hoc (identity "-") не требует сертификата, но вшивает entitlements
-        # в бинарник. Инструмент переподписи (AltStore/GBox/Feather/ESign)
-        # увидит заявленную App Group и сохранит её на .appex — иначе виджет
-        # после переподписи останется без общего контейнера. Вложенные бандлы
-        # подписываются ПЕРВЫМИ.
-        run: |
-          APP_PATH=$(find build/Build/Products/Release-iphoneos -maxdepth 1 -name "*.app" -type d | head -n 1)
-          if [ -z "$APP_PATH" ]; then
-            echo "::error::Собранный .app не найден."
-            exit 1
-          fi
-          echo "App: $APP_PATH"
-          if [ -d "$APP_PATH/PlugIns/KrasavaWidget.appex" ]; then
-            codesign --force --sign - --entitlements Support/KrasavaWidget.entitlements \
-              "$APP_PATH/PlugIns/KrasavaWidget.appex"
-          fi
-          codesign --force --sign - --entitlements Support/KrasavaSwiftUI.entitlements "$APP_PATH"
-          codesign -d --entitlements :- "$APP_PATH" || true
+          MARKETING_VERSION: ${{ needs.resolve.outputs.version }}
+          CURRENT_PROJECT_VERSION: ${{ needs.resolve.outputs.build_id }}
+        run: bash tools/build_ios_unsigned.sh
 
       - name: 📦 Package unsigned IPA
         env:
           CHANNEL: ${{ needs.resolve.outputs.channel }}
           VERSION: ${{ needs.resolve.outputs.version }}
         run: |
-          APP_PATH=$(find build/Build/Products/Release-iphoneos -maxdepth 1 -name "*.app" -type d | head -n 1)
-          mkdir -p Payload
-          cp -R "$APP_PATH" Payload/
           if [ "$CHANNEL" = "stable" ]; then
-            IPA="KrasavaSwiftUI.ipa"
+            OUTPUT="KrasavaSwiftUI.ipa" bash tools/package_ipa.sh
           else
-            IPA="KrasavaSwiftUI-v${VERSION}.ipa"
+            OUTPUT="KrasavaSwiftUI-v${VERSION}.ipa" bash tools/package_ipa.sh
           fi
-          zip -qry "$IPA" Payload
-          rm -rf Payload
-          echo "IPA_NAME=$IPA" >> "$GITHUB_ENV"
-          ls -lh "$IPA"
+          echo "IPA_NAME=$(ls *.ipa | head -n 1)" >> "$GITHUB_ENV"
 
       - name: 📤 Upload IPA artifact
         uses: actions/upload-artifact@v4

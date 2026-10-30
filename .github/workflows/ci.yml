@@ -1,6 +1,6 @@
 name: 🧪 CI
 
-# Проверка каждого пуша и пул-реквеста: собирается ли проект и проходят ли
+# Проверка пуша в ветку и пул-реквеста: собирается ли проект и проходят ли
 # тесты домена. Ничего не публикует — это отдельные воркфлоу.
 on:
   push:
@@ -19,36 +19,15 @@ permissions:
 jobs:
   build-and-test:
     name: 🛠️ Build & Test
-    # macos-26 — единственный образ с Xcode 26 и SDK iOS 26. Ниже
-    # SDK 26 проект не соберётся: минимальная версия iOS 26 и Liquid Glass
-    # объявлены именно там.
+    # macos-26 — единственный образ с Xcode 26 и SDK iOS 26. Ниже SDK 26
+    # проект не соберётся: минимальная версия iOS 26 и Liquid Glass объявлены
+    # именно там.
     runs-on: macos-26
     steps:
-      - name: 📚 Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: 🛠️ Select Xcode 26
-        run: |
-          FOUND=""
-          for APP in /Applications/Xcode_26*.app /Applications/Xcode.app; do
-            if [ -d "$APP" ]; then
-              VERSION=$(defaults read "$APP/Contents/Info" CFBundleShortVersionString 2>/dev/null || echo "0")
-              case "$VERSION" in
-                26.*) sudo xcode-select -s "$APP/Contents/Developer"; FOUND="$APP"; break ;;
-              esac
-            fi
-          done
-          if [ -z "$FOUND" ]; then
-            echo "::error::Xcode 26 не найден на раннере."
-            ls -d /Applications/Xcode*.app || true
-            exit 1
-          fi
-          xcodebuild -version
-          echo '--- installed SDKs ---'
-          xcodebuild -showsdks || true
-          echo '--- installed platforms ---'
-          xcodebuild -showComponentPlatforms 2>/dev/null || true
-          xcrun --sdk iphoneos --show-sdk-version
+        uses: ./.github/actions/select-xcode-26
 
       - name: 📱 Pick a simulator
         id: sim
@@ -86,18 +65,8 @@ jobs:
           if command -v xcbeautify >/dev/null 2>&1; then
             xcodebuild test "${ARGS[@]}" | xcbeautify --renderer github-actions
           else
-            xcodebuild test "${ARGS[@]}" -quiet
+            xcodebuild test "${ARGS[@]}"
           fi
 
-      - name: 🔨 Build for device (no codesign)
-        run: |
-          xcodebuild build \
-            -project KrasavaSwiftUI.xcodeproj \
-            -scheme KrasavaSwiftUI \
-            -configuration Release \
-            -sdk iphoneos \
-            -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            -quiet
+      - name: 🔨 Build app (no codesign)
+        run: bash tools/build_ios_unsigned.sh
