@@ -1,0 +1,120 @@
+{
+  "sourceLanguage" : "ru",
+  "strings" : {
+    "lesson.remote" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Дистанционно" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remote" } }
+      }
+    },
+    "type.additional.badge" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ДОП" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "EXT" } }
+      }
+    },
+    "type.consultation.badge" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "КОНС" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "CONS" } }
+      }
+    },
+    "type.coursework.badge" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "КР" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "CW" } }
+      }
+    },
+    "type.credit.badge" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ЗАЧ" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "CRD" } }
+      }
+    },
+    "type.exam.badge" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ЭКЗ" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "EXM" } }
+      }
+    },
+    "type.individual.badge" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "СР" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "IND" } }
+      }
+    },
+    "type.lab.badge" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ЛАБ" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "LAB" } }
+      }
+    },
+    "type.lecture.badge" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ЛК" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "LEC" } }
+      }
+    },
+    "type.other.badge" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ДР" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "OTH" } }
+      }
+    },
+    "type.practice.badge" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ПР" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "PRC" } }
+      }
+    },
+    "widget.description" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Ближайшие пары: аудитория, время и дисциплина" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Upcoming classes: room, time and subject" } }
+      }
+    },
+    "widget.empty.description" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Откройте приложение и выберите расписание." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open the app and pick a schedule." } }
+      }
+    },
+    "widget.empty.title" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Нет данных" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No data" } }
+      }
+    },
+    "widget.status.current" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "СЕЙЧАС" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "NOW" } }
+      }
+    },
+    "widget.status.next" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ДАЛЕЕ" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "NEXT" } }
+      }
+    },
+    "widget.status.soon" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ЧЕРЕЗ %lld МИН" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "IN %lld MIN" } }
+      }
+    },
+    "widget.title" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Расписание" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Schedule" } }
+      }
+    },
+    "widget.today" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "СЕГОДНЯ" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "TODAY" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

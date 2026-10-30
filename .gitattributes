@@ -1,0 +1,32 @@
+# Нормализация переводов строк.
+#
+# Xcode и Swift-компилятор ожидают LF. Без этого файла на Windows-машине
+# рабочие копии получают CRLF, и git показывает ложные диффы, а CI на macOS
+# может ругаться на формат `.pbxproj`.
+* text=auto eol=lf
+
+# Бинарные файлы — не трогать.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ipa binary
+*.app binary
+*.appex binary
+*.dSYM binary
+*.p12 binary
+*.cer binary
+*.mobileprovision binary
+
+# Явно текстовые форматы проекта.
+*.pbxproj text eol=lf
+*.xcscheme text eol=lf
+*.xcworkspacedata text eol=lf
+*.plist text eol=lf
+*.entitlements text eol=lf
+*.xcstrings text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.swift text eol=lf
+*.md text eol=lf
+*.py text eol=lf
