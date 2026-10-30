@@ -20,6 +20,23 @@
                ReferencedContainer = "container:KrasavaSwiftUI.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <!-- Тестовый бандл обязан быть в BuildAction: без записи здесь
+              xcodebuild отвечает «Scheme is not currently configured for the
+              test action», даже если он указан в TestAction/Testables. -->
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B300000000000000000000B3"
+               BuildableName = "KrasavaSwiftUITests.xctest"
+               BlueprintName = "KrasavaSwiftUITests"
+               ReferencedContainer = "container:KrasavaSwiftUI.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -27,8 +44,6 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <TestPlans>
-      </TestPlans>
       <Testables>
          <TestableReference
             skipped = "NO">
