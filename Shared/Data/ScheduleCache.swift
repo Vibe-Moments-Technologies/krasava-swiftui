@@ -33,11 +33,12 @@ struct CachedSchedule: Codable, Sendable {
 ///    бэкапе ему делать нечего (и Apple за это может отклонить приложение,
 ///    если кэш раздувает резервную копию).
 struct AppFileStorage: Sendable {
-    let fileManager: FileManager
+    // `FileManager` не Sendable, поэтому не храним его в поле: тип объявлен
+    // Sendable, и хранимое не-Sendable свойство не прошло бы проверку Swift 6.
+    // Обёртка всё равно работает только с общим `FileManager.default`.
+    init() {}
 
-    init(fileManager: FileManager = .default) {
-        self.fileManager = fileManager
-    }
+    private var fileManager: FileManager { .default }
 
     /// Каталог с пользовательскими данными (бэкапится).
     func supportDirectory() throws -> URL {
