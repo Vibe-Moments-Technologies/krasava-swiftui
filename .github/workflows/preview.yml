@@ -72,6 +72,10 @@ jobs:
             exit 1
           fi
           xcodebuild -version
+          echo '--- installed SDKs ---'
+          xcodebuild -showsdks || true
+          echo '--- installed platforms ---'
+          xcodebuild -showComponentPlatforms 2>/dev/null || true
 
       - name: 🔨 Build app (no codesign)
         env:
@@ -82,7 +86,7 @@ jobs:
             -project KrasavaSwiftUI.xcodeproj \
             -scheme KrasavaSwiftUI \
             -configuration Release \
-            -destination 'generic/platform=iOS' \
+            -sdk iphoneos \
             -derivedDataPath build \
             MARKETING_VERSION="$VERSION" \
             CURRENT_PROJECT_VERSION="$BUILD_ID" \
