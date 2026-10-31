@@ -122,8 +122,11 @@ jobs:
           for APPEARANCE in light dark; do
             xcrun simctl ui "$UDID" appearance "$APPEARANCE" || true
             for SCREEN in schedule settings about lesson; do
+              # Локаль принудительно русская: интерфейс русскоязычный, и русские
+              # подписи длиннее — именно они стрессуют вёрстку.
               xcrun simctl launch --terminate-running-process "$UDID" "$BUNDLE_ID" \
-                -seedDemo YES -screenshotScreen "$SCREEN" > /dev/null
+                -seedDemo YES -screenshotScreen "$SCREEN" \
+                -AppleLanguages "(ru)" -AppleLocale ru_RU > /dev/null
               sleep 4
               xcrun simctl io "$UDID" screenshot \
                 "snapshots/${SCREEN}-${APPEARANCE}.png" > /dev/null 2>&1 || true

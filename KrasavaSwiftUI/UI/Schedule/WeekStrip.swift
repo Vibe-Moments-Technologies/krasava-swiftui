@@ -69,13 +69,18 @@ struct WeekStrip: View {
         }
     }
 
+    /// Стрелки намеренно лёгкие: в шапке календаря уже есть стеклянная
+    /// подложка, и тяжёлые стеклянные кнопки внутри неё читались как
+    /// отдельные панели, перегружая верх экрана.
     private func arrowButton(systemImage: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemImage)
-                .font(.system(size: 12, weight: .semibold))
-                .frame(width: 28, height: 28)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.secondary)
+                .frame(width: 32, height: 32)
+                .contentShape(.rect)
         }
-        .buttonStyle(.glass)
+        .buttonStyle(.plain)
     }
 
     // MARK: - Лента недель

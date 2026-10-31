@@ -406,11 +406,11 @@ struct EmptySlotCard: View {
         HStack {
             Text(verbatim: "\(Labels.bell(bell)) · \(start.description)–\(end.description)")
                 .font(.caption)
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(.secondary)
             Spacer()
             Text("lesson.empty")
                 .font(.caption2)
-                .foregroundStyle(.quaternary)
+                .foregroundStyle(.tertiary)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
