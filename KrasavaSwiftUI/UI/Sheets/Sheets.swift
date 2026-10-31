@@ -647,7 +647,7 @@ extension ScheduleStore {
     /// данные. Без этого переключатель «скрывать доп. занятия» менял бы
     /// значение, но лента не обновлялась.
     func preferenceBinding<Value>(
-        _ keyPath: WritableKeyPath<Preferences, Value>
+        _ keyPath: ReferenceWritableKeyPath<Preferences, Value>
     ) -> Binding<Value> {
         Binding(
             get: { self.preferences[keyPath: keyPath] },
