@@ -19,12 +19,21 @@ import UIKit
 @Suite("Снимки экрана")
 struct SnapshotTests {
 
+    /// Каталог, куда складываются снимки.
+    ///
+    /// Переменные окружения оболочки до процесса тестов на симуляторе не
+    /// доходят, поэтому пишем в Documents приложения-хоста: CI забирает файлы
+    /// через `simctl get_app_container`. Переменная оставлена для локальных
+    /// прогонов.
     private var outputDirectory: URL {
         if let raw = ProcessInfo.processInfo.environment["SNAPSHOT_DIR"], !raw.isEmpty {
             return URL(fileURLWithPath: raw, isDirectory: true)
         }
-        return FileManager.default.temporaryDirectory
-            .appending(path: "KrasavaSnapshots", directoryHint: .isDirectory)
+        let documents = FileManager.default.urls(
+            for: .documentDirectory,
+            in: .userDomainMask
+        ).first ?? FileManager.default.temporaryDirectory
+        return documents.appending(path: "Snapshots", directoryHint: .isDirectory)
     }
 
     /// Устройство, под которое считаем размеры (iPhone 17, 6.3").
