@@ -1,3 +1,4 @@
+@testable import KrasavaSwiftUI
 import Foundation
 
 /// Фикстуры фида — срез настоящего ответа `schedule-of.mirea.ru`.

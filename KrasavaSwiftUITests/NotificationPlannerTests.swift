@@ -1,3 +1,4 @@
+@testable import KrasavaSwiftUI
 import Foundation
 import Testing
 

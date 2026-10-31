@@ -139,10 +139,10 @@
 			buildRules = (
 			);
 			dependencies = (
+				940000000000000000000094 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				840000000000000000000084 /* KrasavaSwiftUITests */,
-				830000000000000000000083 /* Shared */,
 			);
 			name = KrasavaSwiftUITests;
 			packageProductDependencies = (
@@ -262,6 +262,11 @@
 			target = B200000000000000000000B2 /* KrasavaWidget */;
 			targetProxy = 920000000000000000000092 /* PBXContainerItemProxy */;
 		};
+		940000000000000000000094 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B100000000000000000000B1 /* KrasavaSwiftUI */;
+			targetProxy = 950000000000000000000095 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXContainerItemProxy section */
@@ -271,6 +276,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = B200000000000000000000B2;
 			remoteInfo = KrasavaWidget;
+		};
+		950000000000000000000095 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A100000000000000000000A1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B100000000000000000000B1;
+			remoteInfo = KrasavaSwiftUI;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -444,6 +456,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 26.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.vibemoments.krasavaswiftui.tests;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KrasavaSwiftUI.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KrasavaSwiftUI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -458,6 +472,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 26.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.vibemoments.krasavaswiftui.tests;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KrasavaSwiftUI.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KrasavaSwiftUI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
