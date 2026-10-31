@@ -1,642 +1,1926 @@
 {
-  "sourceLanguage" : "ru",
-  "strings" : {
-    "app.title" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Krasava" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Krasava" } }
-      }
-    },
-    "break.duration.format" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Перемена %lld мин" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Break %lld min" } }
-      }
-    },
-    "changes.empty.description" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Расписание не изменилось с прошлого обновления." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "The schedule has not changed since the last refresh." } }
-      }
-    },
-    "changes.empty.title" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Изменений нет" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "No changes" } }
-      }
-    },
-    "changes.title" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Изменения" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Changes" } }
-      }
-    },
-    "common.cancel" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Отмена" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cancel" } }
-      }
-    },
-    "common.done" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Готово" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Done" } }
-      }
-    },
-    "common.retry" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Повторить" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Retry" } }
-      }
-    },
-    "common.today" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Сегодня" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Today" } }
-      }
-    },
-    "day.empty.description" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Отличный повод отдохнуть" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "A good reason to take a break" } }
-      }
-    },
-    "day.empty.title" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "На этот день пар нет" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "No classes this day" } }
-      }
-    },
-    "detail.bell" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Пара" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Period" } }
-      }
-    },
-    "detail.day" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "День" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Day" } }
-      }
-    },
-    "detail.groups" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Группы" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Groups" } }
-      }
-    },
-    "detail.hideSubject" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Скрыть предмет" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Hide subject" } }
-      }
-    },
-    "detail.hideSubject.footer" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Скрытый предмет исчезнет из ленты, календаря, виджетов и напоминаний. Вернуть можно в настройках." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "A hidden subject disappears from the schedule, calendar, widgets and reminders. You can restore it in Settings." } }
-      }
-    },
-    "detail.mute" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Не напоминать об этой паре" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Mute reminders for this class" } }
-      }
-    },
-    "detail.note.footer" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Заметка сохраняется автоматически и остаётся на месте после обновления расписания." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "The note is saved automatically and survives schedule updates." } }
-      }
-    },
-    "detail.room" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Аудитория" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Room" } }
-      }
-    },
-    "detail.section.info" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Занятие" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Class" } }
-      }
-    },
-    "detail.section.note" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Заметка" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Note" } }
-      }
-    },
-    "detail.section.type" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Тип занятия" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Class type" } }
-      }
-    },
-    "detail.teacher" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Преподаватель" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Teacher" } }
-      }
-    },
-    "detail.time" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Время" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Time" } }
-      }
-    },
-    "detail.type" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Тип" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Type" } }
-      }
-    },
-    "detail.type.footer" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Тип приходит из расписания. Можно задать свой — для этой пары или для всего предмета." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "The type comes from the schedule. You can override it for this class or for the whole subject." } }
-      }
-    },
-    "detail.type.manual" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Тип задан вручную" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Type set manually" } }
-      }
-    },
-    "detail.unmute" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Снова напоминать об этой паре" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Unmute reminders for this class" } }
-      }
-    },
-    "diff.detail.added" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Новая пара, %lld пара, ауд. %@" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "New class, period %lld, room %@" } }
-      }
-    },
-    "diff.detail.added.remote" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Новая пара, %lld пара, дистанционно" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "New class, period %lld, remote" } }
-      }
-    },
-    "diff.detail.cancelled" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Отменена" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cancelled" } }
-      }
-    },
-    "diff.detail.room" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Аудитория: %@ → %@" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Room: %@ → %@" } }
-      }
-    },
-    "diff.detail.teacher" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Преподаватель: %@ → %@" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Teacher: %@ → %@" } }
-      }
-    },
-    "diff.detail.time" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Время: %@ → %@" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Time: %@ → %@" } }
-      }
-    },
-    "empty.add" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Добавить расписание" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add schedule" } }
-      }
-    },
-    "empty.description" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Найдите свою группу, преподавателя или аудиторию — и расписание появится здесь." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Find your group, teacher or room and the schedule will appear here." } }
-      }
-    },
-    "empty.title" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Расписание не выбрано" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "No schedule selected" } }
-      }
-    },
-    "error.emptySchedule" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Сервер вернул пустое расписание. Показаны сохранённые данные." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "The server returned an empty schedule. Showing saved data." } }
-      }
-    },
-    "error.http" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Сервер расписания недоступен (код %lld)." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "The schedule server is unavailable (code %lld)." } }
-      }
-    },
-    "error.malformed" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Не удалось разобрать ответ сервера." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Could not parse the server response." } }
-      }
-    },
-    "error.offline" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Нет соединения. Показаны сохранённые данные." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "No connection. Showing saved data." } }
-      }
-    },
-    "lesson.bell.format" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Пара %lld" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Period %lld" } }
-      }
-    },
-    "lesson.empty" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Нет пары" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "No class" } }
-      }
-    },
-    "lesson.remote" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Дистанционно" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remote" } }
-      }
-    },
-    "note.placeholder" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Что взять, что сдать, что спросили" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "What to bring, what to submit, what was asked" } }
-      }
-    },
-    "schedule.change" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Сменить расписание" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Change schedule" } }
-      }
-    },
-    "schedule.refresh" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Обновить" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Refresh" } }
-      }
-    },
-    "search.failed.description" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Проверьте соединение и попробуйте ещё раз." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Check your connection and try again." } }
-      }
-    },
-    "search.failed.title" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Поиск не удался" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Search failed" } }
-      }
-    },
-    "search.hint.description" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Введите минимум два символа — например ИКБО или фамилию преподавателя." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Type at least two characters, for example a group or a teacher's name." } }
-      }
-    },
-    "search.hint.title" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Поиск расписания" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Search schedule" } }
-      }
-    },
-    "search.prompt" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Группа, преподаватель или аудитория" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Group, teacher or room" } }
-      }
-    },
-    "search.title" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Расписание" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Schedule" } }
-      }
-    },
-    "settings.abbreviated" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Сокращённые названия" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Abbreviated names" } }
-      }
-    },
-    "settings.about.footer" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Неофициальное приложение. Расписание загружается из открытых источников РТУ МИРЭА." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Unofficial app. The schedule is loaded from open RTU MIREA sources." } }
-      }
-    },
-    "settings.about.source" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Источник" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Source" } }
-      }
-    },
-    "settings.about.source.value" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "schedule-of.mirea.ru" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "schedule-of.mirea.ru" } }
-      }
-    },
-    "settings.about.version" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Версия" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Version" } }
-      }
-    },
-    "settings.autoScroll" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Прокрутка к текущей паре" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Scroll to current class" } }
-      }
-    },
-    "settings.breakProgress" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Прогресс перемены" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Break progress" } }
-      }
-    },
-    "settings.calendarCollapsed" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Свернуть календарь" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Collapse calendar" } }
-      }
-    },
-    "settings.hidden.unhide" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Вернуть" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Restore" } }
-      }
-    },
-    "settings.hideAdditional" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Скрывать доп. занятия" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Hide extra classes" } }
-      }
-    },
-    "settings.lessonProgress" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Прогресс пары" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Class progress" } }
-      }
-    },
-    "settings.remove.confirm" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Удалить расписание и заметки" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Delete schedule and notes" } }
-      }
-    },
-    "settings.remove.message" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Вместе с расписанием удалятся заметки к парам и предметам. Кэш расписания загрузится заново при следующем выборе." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Notes for classes and subjects will be deleted too. The schedule cache will be reloaded next time you pick one." } }
-      }
-    },
-    "settings.remove.title" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Удалить сохранённое расписание" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Delete saved schedule" } }
-      }
-    },
-    "settings.section.about" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "О приложении" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "About" } }
-      }
-    },
-    "settings.section.appearance" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Оформление" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Appearance" } }
-      }
-    },
-    "settings.section.hidden" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Скрытые предметы" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Hidden subjects" } }
-      }
-    },
-    "settings.section.schedule" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Расписание" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Schedule" } }
-      }
-    },
-    "settings.section.types" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Цвета типов занятий" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Class type colors" } }
-      }
-    },
-    "settings.section.types.footer" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Цвет типа используется в карточках, в мини-календаре и в виджетах." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "The type color is used in cards, in the mini calendar and in widgets." } }
-      }
-    },
-    "settings.showEmpty" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Показывать пустые пары" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Show empty periods" } }
-      }
-    },
-    "settings.theme" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Тема" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Theme" } }
-      }
-    },
-    "settings.title" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Настройки" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Settings" } }
-      }
-    },
-    "settings.twoWeeks" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Две недели в календаре" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Two weeks in calendar" } }
-      }
-    },
-    "settings.types.reset" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Сбросить цвета" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Reset colors" } }
-      }
-    },
-    "target.kind.auditorium" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Аудитория" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Room" } }
-      }
-    },
-    "target.kind.group" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Группа" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Group" } }
-      }
-    },
-    "target.kind.teacher" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Преподаватель" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Teacher" } }
-      }
-    },
-    "theme.dark" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Тёмная" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Dark" } }
-      }
-    },
-    "theme.light" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Светлая" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Light" } }
-      }
-    },
-    "theme.system" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Системная" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "System" } }
-      }
-    },
-    "type.additional.badge" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ДОП" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "EXT" } }
-      }
-    },
-    "type.additional.name" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Доп. занятие" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Extra class" } }
-      }
-    },
-    "type.auto" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Как в расписании" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "From schedule" } }
-      }
-    },
-    "type.consultation.badge" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "КОНС" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "CONS" } }
-      }
-    },
-    "type.consultation.name" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Консультация" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Consultation" } }
-      }
-    },
-    "type.coursework.badge" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "КР" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "CW" } }
-      }
-    },
-    "type.coursework.name" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Курсовая работа" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Coursework" } }
-      }
-    },
-    "type.credit.badge" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ЗАЧ" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "CRD" } }
-      }
-    },
-    "type.credit.name" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Зачёт" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Credit" } }
-      }
-    },
-    "type.exam.badge" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ЭКЗ" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "EXM" } }
-      }
-    },
-    "type.exam.name" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Экзамен" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Exam" } }
-      }
-    },
-    "type.individual.badge" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "СР" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "IND" } }
-      }
-    },
-    "type.individual.name" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Самост. работа" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Independent work" } }
-      }
-    },
-    "type.lab.badge" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ЛАБ" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "LAB" } }
-      }
-    },
-    "type.lab.name" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Лабораторная" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Laboratory" } }
-      }
-    },
-    "type.lecture.badge" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ЛК" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "LEC" } }
-      }
-    },
-    "type.lecture.name" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Лекция" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Lecture" } }
-      }
-    },
-    "type.other.badge" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ДР" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "OTH" } }
-      }
-    },
-    "type.other.name" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Занятие" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Class" } }
-      }
-    },
-    "type.practice.badge" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "ПР" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "PRC" } }
-      }
-    },
-    "type.practice.name" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Практика" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Practice" } }
-      }
-    },
-    "week.label.format" : {
-      "localizations" : {
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Неделя %lld" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Week %lld" } }
+  "sourceLanguage": "ru",
+  "strings": {
+    "app.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Krasava"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Krasava"
+          }
+        }
+      }
+    },
+    "break.duration.format": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перемена %lld мин"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Break %lld min"
+          }
+        }
+      }
+    },
+    "changes.empty.description": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расписание не изменилось с прошлого обновления."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The schedule has not changed since the last refresh."
+          }
+        }
+      }
+    },
+    "changes.empty.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изменений нет"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No changes"
+          }
+        }
+      }
+    },
+    "changes.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изменения"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changes"
+          }
+        }
+      }
+    },
+    "common.cancel": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмена"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "common.done": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Готово"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "common.retry": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Повторить"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retry"
+          }
+        }
+      }
+    },
+    "common.today": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сегодня"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today"
+          }
+        }
+      }
+    },
+    "day.empty.description": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отличный повод отдохнуть"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A good reason to take a break"
+          }
+        }
+      }
+    },
+    "day.empty.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На этот день пар нет"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No classes this day"
+          }
+        }
+      }
+    },
+    "detail.bell": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пара"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Period"
+          }
+        }
+      }
+    },
+    "detail.day": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "День"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day"
+          }
+        }
+      }
+    },
+    "detail.groups": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Группы"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Groups"
+          }
+        }
+      }
+    },
+    "detail.hideSubject": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скрыть предмет"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide subject"
+          }
+        }
+      }
+    },
+    "detail.hideSubject.footer": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скрытый предмет исчезнет из ленты, календаря, виджетов и напоминаний. Вернуть можно в настройках."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A hidden subject disappears from the schedule, calendar, widgets and reminders. You can restore it in Settings."
+          }
+        }
+      }
+    },
+    "detail.mute": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не напоминать об этой паре"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mute reminders for this class"
+          }
+        }
+      }
+    },
+    "detail.note.footer": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заметка сохраняется автоматически и остаётся на месте после обновления расписания."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The note is saved automatically and survives schedule updates."
+          }
+        }
+      }
+    },
+    "detail.room": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Аудитория"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Room"
+          }
+        }
+      }
+    },
+    "detail.section.info": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Занятие"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Class"
+          }
+        }
+      }
+    },
+    "detail.section.note": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заметка"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Note"
+          }
+        }
+      }
+    },
+    "detail.section.type": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тип занятия"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Class type"
+          }
+        }
+      }
+    },
+    "detail.teacher": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Преподаватель"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teacher"
+          }
+        }
+      }
+    },
+    "detail.time": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Время"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time"
+          }
+        }
+      }
+    },
+    "detail.type": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тип"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type"
+          }
+        }
+      }
+    },
+    "detail.type.footer": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тип приходит из расписания. Можно задать свой — для этой пары или для всего предмета."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The type comes from the schedule. You can override it for this class or for the whole subject."
+          }
+        }
+      }
+    },
+    "detail.type.manual": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тип задан вручную"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type set manually"
+          }
+        }
+      }
+    },
+    "detail.unmute": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снова напоминать об этой паре"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unmute reminders for this class"
+          }
+        }
+      }
+    },
+    "diff.detail.added": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Новая пара, %lld пара, ауд. %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New class, period %lld, room %@"
+          }
+        }
+      }
+    },
+    "diff.detail.added.remote": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Новая пара, %lld пара, дистанционно"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New class, period %lld, remote"
+          }
+        }
+      }
+    },
+    "diff.detail.cancelled": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отменена"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelled"
+          }
+        }
+      }
+    },
+    "diff.detail.room": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Аудитория: %@ → %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Room: %@ → %@"
+          }
+        }
+      }
+    },
+    "diff.detail.teacher": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Преподаватель: %@ → %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teacher: %@ → %@"
+          }
+        }
+      }
+    },
+    "diff.detail.time": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Время: %@ → %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time: %@ → %@"
+          }
+        }
+      }
+    },
+    "empty.add": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить расписание"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add schedule"
+          }
+        }
+      }
+    },
+    "empty.description": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Найдите свою группу, преподавателя или аудиторию — и расписание появится здесь."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find your group, teacher or room and the schedule will appear here."
+          }
+        }
+      }
+    },
+    "empty.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расписание не выбрано"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No schedule selected"
+          }
+        }
+      }
+    },
+    "error.emptySchedule": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сервер вернул пустое расписание. Показаны сохранённые данные."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server returned an empty schedule. Showing saved data."
+          }
+        }
+      }
+    },
+    "error.http": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сервер расписания недоступен (код %lld)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The schedule server is unavailable (code %lld)."
+          }
+        }
+      }
+    },
+    "error.malformed": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не удалось разобрать ответ сервера."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not parse the server response."
+          }
+        }
+      }
+    },
+    "error.offline": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нет соединения. Показаны сохранённые данные."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No connection. Showing saved data."
+          }
+        }
+      }
+    },
+    "lesson.bell.format": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пара %lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Period %lld"
+          }
+        }
+      }
+    },
+    "lesson.empty": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нет пары"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No class"
+          }
+        }
+      }
+    },
+    "lesson.remote": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дистанционно"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remote"
+          }
+        }
+      }
+    },
+    "note.placeholder": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Что взять, что сдать, что спросили"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What to bring, what to submit, what was asked"
+          }
+        }
+      }
+    },
+    "notification.body.plain": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Через %lld мин: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In %lld min: %@"
+          }
+        }
+      }
+    },
+    "notification.body.remote": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Через %lld мин: %@, дистанционно"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In %lld min: %@, remote"
+          }
+        }
+      }
+    },
+    "notification.body.room": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Через %lld мин: %@, ауд. %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In %lld min: %@, room %@"
+          }
+        }
+      }
+    },
+    "notification.test.body": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Уведомления работают — напоминания о парах придут вовремя."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications work — class reminders will arrive on time."
+          }
+        }
+      }
+    },
+    "notification.test.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверка"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test"
+          }
+        }
+      }
+    },
+    "notification.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скоро занятие"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Class soon"
+          }
+        }
+      }
+    },
+    "schedule.change": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сменить расписание"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change schedule"
+          }
+        }
+      }
+    },
+    "schedule.refresh": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обновить"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh"
+          }
+        }
+      }
+    },
+    "search.failed.description": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверьте соединение и попробуйте ещё раз."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check your connection and try again."
+          }
+        }
+      }
+    },
+    "search.failed.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поиск не удался"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search failed"
+          }
+        }
+      }
+    },
+    "search.hint.description": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введите минимум два символа — например ИКБО или фамилию преподавателя."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type at least two characters, for example a group or a teacher's name."
+          }
+        }
+      }
+    },
+    "search.hint.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поиск расписания"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search schedule"
+          }
+        }
+      }
+    },
+    "search.prompt": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Группа, преподаватель или аудитория"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Group, teacher or room"
+          }
+        }
+      }
+    },
+    "search.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расписание"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schedule"
+          }
+        }
+      }
+    },
+    "settings.abbreviated": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сокращённые названия"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbreviated names"
+          }
+        }
+      }
+    },
+    "settings.about.footer": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неофициальное приложение. Расписание загружается из открытых источников РТУ МИРЭА."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unofficial app. The schedule is loaded from open RTU MIREA sources."
+          }
+        }
+      }
+    },
+    "settings.about.source": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Источник"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source"
+          }
+        }
+      }
+    },
+    "settings.about.source.value": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "schedule-of.mirea.ru"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "schedule-of.mirea.ru"
+          }
+        }
+      }
+    },
+    "settings.about.version": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Версия"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
+          }
+        }
+      }
+    },
+    "settings.autoScroll": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прокрутка к текущей паре"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scroll to current class"
+          }
+        }
+      }
+    },
+    "settings.breakProgress": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогресс перемены"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Break progress"
+          }
+        }
+      }
+    },
+    "settings.calendarCollapsed": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Свернуть календарь"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collapse calendar"
+          }
+        }
+      }
+    },
+    "settings.hidden.unhide": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вернуть"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore"
+          }
+        }
+      }
+    },
+    "settings.hideAdditional": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скрывать доп. занятия"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide extra classes"
+          }
+        }
+      }
+    },
+    "settings.lessonProgress": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогресс пары"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Class progress"
+          }
+        }
+      }
+    },
+    "settings.notifications.denied.message": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разрешите уведомления в системных настройках, иначе напоминания не придут."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow notifications in system settings, otherwise reminders will not arrive."
+          }
+        }
+      }
+    },
+    "settings.notifications.denied.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Уведомления запрещены"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications are disabled"
+          }
+        }
+      }
+    },
+    "settings.notifications.enabled": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Напоминать о парах"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remind about classes"
+          }
+        }
+      }
+    },
+    "settings.notifications.minutes": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За сколько"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lead time"
+          }
+        }
+      }
+    },
+    "settings.notifications.minutes.value": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За %lld мин"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min before"
+          }
+        }
+      }
+    },
+    "settings.notifications.test": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тестовое уведомление"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send a test notification"
+          }
+        }
+      }
+    },
+    "settings.remove.confirm": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить расписание и заметки"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete schedule and notes"
+          }
+        }
+      }
+    },
+    "settings.remove.message": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вместе с расписанием удалятся заметки к парам и предметам. Кэш расписания загрузится заново при следующем выборе."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notes for classes and subjects will be deleted too. The schedule cache will be reloaded next time you pick one."
+          }
+        }
+      }
+    },
+    "settings.remove.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить сохранённое расписание"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete saved schedule"
+          }
+        }
+      }
+    },
+    "settings.section.about": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "О приложении"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About"
+          }
+        }
+      }
+    },
+    "settings.section.appearance": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оформление"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appearance"
+          }
+        }
+      }
+    },
+    "settings.section.hidden": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скрытые предметы"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hidden subjects"
+          }
+        }
+      }
+    },
+    "settings.section.notifications": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Уведомления"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications"
+          }
+        }
+      }
+    },
+    "settings.section.notifications.footer": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Напоминания ставятся локально на устройстве и не отправляются наружу."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reminders are scheduled locally on the device and never leave it."
+          }
+        }
+      }
+    },
+    "settings.section.schedule": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расписание"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schedule"
+          }
+        }
+      }
+    },
+    "settings.section.types": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цвета типов занятий"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Class type colors"
+          }
+        }
+      }
+    },
+    "settings.section.types.footer": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цвет типа используется в карточках, в мини-календаре и в виджетах."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The type color is used in cards, in the mini calendar and in widgets."
+          }
+        }
+      }
+    },
+    "settings.showEmpty": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показывать пустые пары"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show empty periods"
+          }
+        }
+      }
+    },
+    "settings.theme": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тема"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theme"
+          }
+        }
+      }
+    },
+    "settings.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Настройки"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "settings.twoWeeks": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Две недели в календаре"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two weeks in calendar"
+          }
+        }
+      }
+    },
+    "settings.types.reset": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сбросить цвета"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset colors"
+          }
+        }
+      }
+    },
+    "target.kind.auditorium": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Аудитория"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Room"
+          }
+        }
+      }
+    },
+    "target.kind.group": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Группа"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Group"
+          }
+        }
+      }
+    },
+    "target.kind.teacher": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Преподаватель"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teacher"
+          }
+        }
+      }
+    },
+    "theme.dark": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тёмная"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dark"
+          }
+        }
+      }
+    },
+    "theme.light": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Светлая"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light"
+          }
+        }
+      }
+    },
+    "theme.system": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Системная"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System"
+          }
+        }
+      }
+    },
+    "type.additional.badge": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ДОП"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EXT"
+          }
+        }
+      }
+    },
+    "type.additional.name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доп. занятие"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extra class"
+          }
+        }
+      }
+    },
+    "type.auto": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Как в расписании"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From schedule"
+          }
+        }
+      }
+    },
+    "type.consultation.badge": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "КОНС"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CONS"
+          }
+        }
+      }
+    },
+    "type.consultation.name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Консультация"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consultation"
+          }
+        }
+      }
+    },
+    "type.coursework.badge": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "КР"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CW"
+          }
+        }
+      }
+    },
+    "type.coursework.name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Курсовая работа"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coursework"
+          }
+        }
+      }
+    },
+    "type.credit.badge": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ЗАЧ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CRD"
+          }
+        }
+      }
+    },
+    "type.credit.name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зачёт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Credit"
+          }
+        }
+      }
+    },
+    "type.exam.badge": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ЭКЗ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EXM"
+          }
+        }
+      }
+    },
+    "type.exam.name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Экзамен"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exam"
+          }
+        }
+      }
+    },
+    "type.individual.badge": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "СР"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IND"
+          }
+        }
+      }
+    },
+    "type.individual.name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Самост. работа"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Independent work"
+          }
+        }
+      }
+    },
+    "type.lab.badge": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ЛАБ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LAB"
+          }
+        }
+      }
+    },
+    "type.lab.name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Лабораторная"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Laboratory"
+          }
+        }
+      }
+    },
+    "type.lecture.badge": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ЛК"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LEC"
+          }
+        }
+      }
+    },
+    "type.lecture.name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Лекция"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lecture"
+          }
+        }
+      }
+    },
+    "type.other.badge": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ДР"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OTH"
+          }
+        }
+      }
+    },
+    "type.other.name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Занятие"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Class"
+          }
+        }
+      }
+    },
+    "type.practice.badge": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ПР"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PRC"
+          }
+        }
+      }
+    },
+    "type.practice.name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Практика"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Practice"
+          }
+        }
+      }
+    },
+    "week.label.format": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неделя %lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Week %lld"
+          }
+        }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

@@ -48,6 +48,15 @@ final class ScheduleStore {
     }
     private(set) var notes: [LessonNote]
 
+    /// Хук «данные изменились».
+    ///
+    /// Приложение подключает сюда перепланирование напоминаний. Сделано
+    /// замыканием, а не прямой зависимостью: `Shared` компилируется и в
+    /// виджет, который не имеет права работать с `UserNotifications`.
+    /// Изоляция `@MainActor` явная — хук вызывается из главного актора,
+    /// и его реализация ожидает того же.
+    var onScheduleChanged: (@MainActor () -> Void)?
+
     init(
         api: ScheduleAPI = ScheduleAPI(),
         preferences: Preferences,
@@ -308,5 +317,6 @@ final class ScheduleStore {
                 today: ScheduleClock.today()
             )
         )
+        onScheduleChanged?()
     }
 }

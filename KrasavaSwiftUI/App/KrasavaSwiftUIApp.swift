@@ -9,8 +9,14 @@ struct KrasavaSwiftUIApp: App {
 
     init() {
         let preferences = Preferences()
+        let store = ScheduleStore(preferences: preferences)
+        // Напоминания планируются снаружи `Shared`: пакет общий с виджетом,
+        // а расширению работать с UserNotifications незачем.
+        store.onScheduleChanged = {
+            Task { await Self.rescheduleNotifications(for: store) }
+        }
         _preferences = State(initialValue: preferences)
-        _store = State(initialValue: ScheduleStore(preferences: preferences))
+        _store = State(initialValue: store)
     }
 
     var body: some Scene {
@@ -22,15 +28,43 @@ struct KrasavaSwiftUIApp: App {
                 // и приложение наследует оформление, ничего не навязывая.
                 .preferredColorScheme(preferences.theme.colorScheme)
                 .task {
+                    // Статус разрешения перечитывается до первой загрузки:
+                    // если пользователь запретил уведомления в системных
+                    // настройках, тумблер должен оказаться выключенным.
+                    await LessonNotifications.shared.refreshAuthorizationStatus()
                     await store.bootstrap()
+                    await Self.rescheduleNotifications(for: store)
                 }
         }
         .onChange(of: scenePhase) { _, phase in
-            // Возврат в foreground — единственный момент, когда тихое
-            // обновление уместно: в фоне приложение не должно будить радио.
-            guard phase == .active, store.hasSchedule, store.isCacheStale else { return }
-            Task { await store.refresh(silent: true) }
+            guard phase == .active else { return }
+            Task {
+                // Возврат в foreground — единственный момент, когда тихое
+                // обновление уместно: в фоне приложение не должно будить радио.
+                await LessonNotifications.shared.refreshAuthorizationStatus()
+                if store.hasSchedule, store.isCacheStale {
+                    await store.refresh(silent: true)
+                }
+                await Self.rescheduleNotifications(for: store)
+            }
         }
+    }
+
+    /// Пересчёт напоминаний по текущему состоянию.
+    ///
+    /// Одна точка входа: смена расписания, настроек, типов и скрытых предметов
+    /// проходит через неё, поэтому «скрытый предмет» исчезает и из напоминаний.
+    @MainActor
+    private static func rescheduleNotifications(for store: ScheduleStore) async {
+        let minutes = store.preferences.notificationsEnabled
+            ? store.preferences.notifyMinutesBefore
+            : 0
+        let filter = VisibilityFilter(hiddenSubjects: store.overrides.hiddenSubjects)
+        await LessonNotifications.shared.reschedule(
+            lessons: store.allLessons,
+            minutesBefore: minutes,
+            isMuted: { filter.isLessonMuted($0, overrides: store.overrides) }
+        )
     }
 }
 

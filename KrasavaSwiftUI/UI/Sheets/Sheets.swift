@@ -136,6 +136,7 @@ struct SettingsSheet: View {
     @Environment(\.colorScheme) private var colorScheme
 
     @State private var showRemoveConfirmation = false
+    @State private var showNotificationsDenied = false
 
     var body: some View {
         @Bindable var preferences = store.preferences
@@ -144,6 +145,7 @@ struct SettingsSheet: View {
             Form {
                 appearanceSection(preferences)
                 scheduleSection(preferences)
+                notificationsSection(preferences)
                 typesSection
                 hiddenSubjectsSection
                 aboutSection
@@ -199,6 +201,56 @@ struct SettingsSheet: View {
         } header: {
             Text("settings.section.schedule")
         }
+    }
+
+    private func notificationsSection(_ preferences: Preferences) -> some View {
+        @Bindable var preferences = preferences
+
+        return Section {
+            Toggle("settings.notifications.enabled", isOn: $preferences.notificationsEnabled)
+                .onChange(of: preferences.notificationsEnabled) { _, enabled in
+                    guard enabled else { return }
+                    // Разрешение спрашиваем в момент включения тумблера, а не
+                    // на старте: так системный диалог появляется в понятном
+                    // контексте. Если пользователь откажет — тумблер вернётся
+                    // в выключенное состояние, а не будет врать.
+                    Task {
+                        let granted = await LessonNotifications.shared.requestAuthorization()
+                        if !granted {
+                            preferences.notificationsEnabled = false
+                            showNotificationsDenied = true
+                        }
+                    }
+                }
+
+            if preferences.notificationsEnabled {
+                Picker("settings.notifications.minutes", selection: $preferences.notifyMinutesBefore) {
+                    ForEach(Preferences.allowedReminderMinutes, id: \.self) { minutes in
+                        Text(verbatim: Self.minutesLabel(minutes)).tag(minutes)
+                    }
+                }
+                Button("settings.notifications.test") {
+                    Task {
+                        await LessonNotifications.shared.refreshAuthorizationStatus()
+                        await LessonNotifications.shared.sendTestNotification()
+                    }
+                }
+            }
+        } header: {
+            Text("settings.section.notifications")
+        } footer: {
+            Text("settings.section.notifications.footer")
+        }
+        .alert("settings.notifications.denied.title", isPresented: $showNotificationsDenied) {
+            Button("common.done", role: .cancel) {}
+        } message: {
+            Text("settings.notifications.denied.message")
+        }
+    }
+
+    /// «За 10 мин» — без склонений: подпись одинакова для всех чисел.
+    private static func minutesLabel(_ minutes: Int) -> String {
+        String(format: String(localized: "settings.notifications.minutes.value"), minutes)
     }
 
     private var typesSection: some View {
