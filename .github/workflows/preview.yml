@@ -83,6 +83,10 @@ jobs:
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
 
       - name: 🧪 Run tests
+        env:
+          # Снимки экранов складываются в рабочую копию, откуда их забирает
+          # артефакт: по ним видно, как вёрстка выглядит на самом деле.
+          SNAPSHOT_DIR: ${{ github.workspace }}/snapshots
         run: |
           set -o pipefail
           xcodebuild test \
@@ -92,6 +96,14 @@ jobs:
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
+
+      - name: 🖼️ Upload UI snapshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: KrasavaSwiftUI-snapshots
+          path: snapshots
+          if-no-files-found: warn
 
       - name: 🔨 Build app (no codesign)
         env:

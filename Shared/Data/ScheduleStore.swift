@@ -359,4 +359,28 @@ final class ScheduleStore {
         )
         onScheduleChanged?()
     }
+
+    #if DEBUG
+    /// Заполнить стор данными напрямую, минуя сеть и диск.
+    ///
+    /// Нужно превью и снимкам экрана в CI: без этого UI не отрисовать, потому
+    /// что данные приходят только из сети.
+    func seed(
+        targets: [ScheduleTarget],
+        selectedID: Int?,
+        schedules: CachedSchedules,
+        overrides newOverrides: UserOverrides,
+        day: DayKey
+    ) {
+        savedTargets = targets
+        selectedTargetID = selectedID
+        cached = schedules
+        selectedDay = day
+        loadSelectedOccurrences()
+        // `overrides` — свойство с наблюдателем: присваивание само пересоберёт
+        // производные данные. Порядок важен, поэтому кэш выставлен выше.
+        overrides = newOverrides
+        rebuildDerived()
+    }
+    #endif
 }
