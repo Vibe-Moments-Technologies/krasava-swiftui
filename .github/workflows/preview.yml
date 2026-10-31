@@ -95,21 +95,35 @@ jobs:
 
       - name: 🖼️ Collect UI snapshots
         # Снимки пишутся в Documents приложения-хоста на симуляторе: переменные
-        # окружения оболочки в процесс тестов не попадают, поэтому забираем их
-        # из контейнера напрямую.
+        # окружения оболочки в процесс тестов не попадают. Точный путь контейнера
+        # зависит от того, как Xcode переустановил приложение, поэтому ищем
+        # каталог по всему устройству, а не угадываем путь.
         if: always()
         run: |
           set -euo pipefail
-          APP_DATA=$(xcrun simctl get_app_container \
-            "${{ steps.sim.outputs.udid }}" \
+          UDID="${{ steps.sim.outputs.udid }}"
+          DEVICE_DATA="$HOME/Library/Developer/CoreSimulator/Devices/$UDID/data"
+
+          mkdir -p snapshots
+
+          CONTAINER=$(xcrun simctl get_app_container "$UDID" \
             "ru.vibemoments.krasavaswiftui" data 2>/dev/null || true)
-          if [ -n "$APP_DATA" ] && [ -d "$APP_DATA/Documents/Snapshots" ]; then
-            mkdir -p snapshots
-            cp -R "$APP_DATA/Documents/Snapshots/." snapshots/
-            echo "==> Снимков: $(ls -1 snapshots | wc -l)"
-            ls -la snapshots
+          if [ -n "$CONTAINER" ] && [ -d "$CONTAINER/Documents/Snapshots" ]; then
+            cp -R "$CONTAINER/Documents/Snapshots/." snapshots/
           else
-            echo "::warning::Снимки не найдены в контейнере приложения."
+            FOUND=$(find "$DEVICE_DATA" -type d -name Snapshots 2>/dev/null | head -n 1)
+            if [ -n "$FOUND" ]; then
+              cp -R "$FOUND/." snapshots/
+            fi
+          fi
+
+          COUNT=$(find snapshots -name '*.png' | wc -l | tr -d ' ')
+          if [ "$COUNT" = "0" ]; then
+            echo "::warning::Снимки не найдены. Диагностика:"
+            find "$DEVICE_DATA" -type d -name Documents 2>/dev/null | head -n 10
+          else
+            echo "==> Снимков: $COUNT"
+            ls -la snapshots
           fi
 
       - name: 📤 Upload UI snapshots
