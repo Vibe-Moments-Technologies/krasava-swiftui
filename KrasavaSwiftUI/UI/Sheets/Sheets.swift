@@ -457,11 +457,14 @@ struct AboutView: View {
     private var headerSection: some View {
         Section {
             VStack(spacing: 8) {
-                Image(systemName: "calendar.badge.clock")
-                    .font(.system(size: 44, weight: .light))
-                    .foregroundStyle(Color.accentColor)
+                // Настоящая иконка приложения, а не системный символ:
+                // на экране «О программе» пользователь ожидает увидеть ту же
+                // иконку, что на домашнем экране.
+                Image("BrandIcon")
+                    .resizable()
+                    .scaledToFit()
                     .frame(width: 84, height: 84)
-                    .background(.quaternary.opacity(0.4), in: .rect(cornerRadius: 20))
+                    .clipShape(.rect(cornerRadius: 19, style: .continuous))
 
                 Text("app.title")
                     .font(.title3.weight(.bold))
