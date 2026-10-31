@@ -85,46 +85,35 @@ jobs:
       - name: 🧪 Run tests
         run: |
           set -o pipefail
+          rm -rf build/TestResults.xcresult
           xcodebuild test \
             -project KrasavaSwiftUI.xcodeproj \
             -scheme KrasavaSwiftUI \
             -destination "id=${{ steps.sim.outputs.udid }}" \
             -derivedDataPath build \
+            -resultBundlePath build/TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
 
-      - name: 🖼️ Collect UI snapshots
-        # Снимки пишутся в Documents приложения-хоста на симуляторе: переменные
-        # окружения оболочки в процесс тестов не попадают. Точный путь контейнера
-        # зависит от того, как Xcode переустановил приложение, поэтому ищем
-        # каталог по всему устройству, а не угадываем путь.
+      - name: 🖼️ Export UI snapshots
+        # Картинки лежат вложениями в результате прогона. Забираем их через
+        # xcresulttool: это не зависит от того, куда симулятор положил данные
+        # приложения.
         if: always()
         run: |
-          set -euo pipefail
-          UDID="${{ steps.sim.outputs.udid }}"
-          DEVICE_DATA="$HOME/Library/Developer/CoreSimulator/Devices/$UDID/data"
-
           mkdir -p snapshots
-
-          CONTAINER=$(xcrun simctl get_app_container "$UDID" \
-            "ru.vibemoments.krasavaswiftui" data 2>/dev/null || true)
-          if [ -n "$CONTAINER" ] && [ -d "$CONTAINER/Documents/Snapshots" ]; then
-            cp -R "$CONTAINER/Documents/Snapshots/." snapshots/
-          else
-            FOUND=$(find "$DEVICE_DATA" -type d -name Snapshots 2>/dev/null | head -n 1)
-            if [ -n "$FOUND" ]; then
-              cp -R "$FOUND/." snapshots/
-            fi
+          if [ ! -d build/TestResults.xcresult ]; then
+            echo "::warning::Результат тестов не найден — снимков не будет."
+            exit 0
           fi
-
-          COUNT=$(find snapshots -name '*.png' | wc -l | tr -d ' ')
-          if [ "$COUNT" = "0" ]; then
-            echo "::warning::Снимки не найдены. Диагностика:"
-            find "$DEVICE_DATA" -type d -name Documents 2>/dev/null | head -n 10
-          else
-            echo "==> Снимков: $COUNT"
-            ls -la snapshots
+          xcrun xcresulttool export attachments \
+            --path build/TestResults.xcresult \
+            --output-path snapshots || true
+          if [ -f snapshots/manifest.json ]; then
+            python3 tools/rename_attachments.py snapshots || true
           fi
+          echo "==> Снимков: $(find snapshots -name '*.png' | wc -l)"
+          ls -1 snapshots | head -n 20
 
       - name: 📤 Upload UI snapshots
         if: always()
@@ -133,7 +122,6 @@ jobs:
           name: KrasavaSwiftUI-snapshots
           path: snapshots
           if-no-files-found: warn
-
       - name: 🔨 Build app (no codesign)
         env:
           MARKETING_VERSION: ${{ needs.resolve.outputs.version }}
