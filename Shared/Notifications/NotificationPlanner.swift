@@ -100,26 +100,40 @@ enum NotificationPlanner {
     /// «СДО» — это сайт вуза, а не аудитория, поэтому для дистанционной пары
     /// пишем «дистанционно», а не «ауд. СДО»: иначе напоминание выглядит как
     /// приглашение в несуществующий кабинет.
-    static func body(for lesson: Lesson, minutesBefore: Int) -> String {
+    ///
+    /// Шаблоны передаются параметром, а не берутся из каталога внутри: в
+    /// тестовом бандле каталога строк нет, и `String(localized:)` вернул бы
+    /// сам ключ. Так форматирование проверяется явно, а в приложении
+    /// подставляется `.localized`.
+    static func body(
+        for lesson: Lesson,
+        minutesBefore: Int,
+        templates: BodyTemplates = .localized
+    ) -> String {
         if lesson.isRemote {
-            return String(
-                format: String(localized: "notification.body.remote"),
-                minutesBefore,
-                lesson.subject
-            )
+            return String(format: templates.remote, minutesBefore, lesson.subject)
         }
         if let room = lesson.physicalRooms.first {
-            return String(
-                format: String(localized: "notification.body.room"),
-                minutesBefore,
-                lesson.subject,
-                room
-            )
+            return String(format: templates.room, minutesBefore, lesson.subject, room)
         }
-        return String(
-            format: String(localized: "notification.body.plain"),
-            minutesBefore,
-            lesson.subject
+        return String(format: templates.plain, minutesBefore, lesson.subject)
+    }
+}
+
+/// Шаблоны текста напоминания.
+///
+/// Отдельный тип, чтобы форматирование не зависело от наличия каталога строк
+/// в конкретном бандле (приложение, виджет, тесты).
+struct BodyTemplates: Sendable {
+    let room: String
+    let remote: String
+    let plain: String
+
+    static var localized: BodyTemplates {
+        BodyTemplates(
+            room: String(localized: "notification.body.room"),
+            remote: String(localized: "notification.body.remote"),
+            plain: String(localized: "notification.body.plain")
         )
     }
 }

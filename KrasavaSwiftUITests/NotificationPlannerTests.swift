@@ -143,33 +143,48 @@ struct NotificationPlannerTests {
         #expect(first == "lesson-2026-10-05-1")
     }
 
+    /// Шаблоны задаются явно: в тестовом бандле каталога строк нет, поэтому
+    /// `String(localized:)` вернул бы сам ключ вместо текста. Логика
+    /// форматирования от этого не зависит — проверяем её напрямую.
+    private let templates = BodyTemplates(
+        room: "Через %lld мин: %@, ауд. %@",
+        remote: "Через %lld мин: %@, дистанционно",
+        plain: "Через %lld мин: %@"
+    )
+
     @Test("В тексте напоминания есть аудитория")
     func bodyWithRoom() {
         let body = NotificationPlanner.body(
             for: lesson(on: DayKey(year: 2026, month: 10, day: 5), rooms: ["А-10"]),
-            minutesBefore: 15
+            minutesBefore: 15,
+            templates: templates
         )
         #expect(body.contains("А-10"))
         #expect(body.contains("15"))
+        #expect(body.contains("Физика"))
     }
 
     @Test("Дистанционная пара подписана «дистанционно», а не «ауд. СДО»")
     func remoteBody() {
         let body = NotificationPlanner.body(
             for: lesson(on: DayKey(year: 2026, month: 10, day: 5), rooms: ["СДО"]),
-            minutesBefore: 10
+            minutesBefore: 10,
+            templates: templates
         )
         // «ауд. СДО» выглядело бы как приглашение в несуществующий кабинет.
-        #expect(body.lowercased().contains("сдо") == false)
+        #expect(body.contains("дистанционно"))
+        #expect(body.contains("ауд.") == false)
+        #expect(body.contains("СДО") == false)
     }
 
     @Test("Пары без аудитории тоже напоминают")
     func bodyWithoutRoom() {
         let body = NotificationPlanner.body(
             for: lesson(on: DayKey(year: 2026, month: 10, day: 5), rooms: []),
-            minutesBefore: 10
+            minutesBefore: 10,
+            templates: templates
         )
-        #expect(body.isEmpty == false)
+        #expect(body == "Через 10 мин: Физика")
     }
 
     @Test("Напоминания упорядочены по дню и паре")
