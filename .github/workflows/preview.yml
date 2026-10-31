@@ -95,25 +95,43 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
 
-      - name: 🖼️ Export UI snapshots
-        # Картинки лежат вложениями в результате прогона. Забираем их через
-        # xcresulttool: это не зависит от того, куда симулятор положил данные
-        # приложения.
+      - name: 📸 Screenshot screens
+        # Честные скриншоты с симулятора. ImageRenderer для этого не годится:
+        # он не рисует lazy-контейнеры, NavigationStack и живые эффекты, и
+        # вместо экрана получается пустой прямоугольник.
+        #
+        # Приложение запускается с аргументами: -seedDemo заполняет стор
+        # демонстрационными данными (DEBUG), -screenshotScreen открывает нужный
+        # экран без ручной навигации.
         if: always()
         run: |
           mkdir -p snapshots
-          if [ ! -d build/TestResults.xcresult ]; then
-            echo "::warning::Результат тестов не найден — снимков не будет."
+          UDID="${{ steps.sim.outputs.udid }}"
+          APP="build/Build/Products/Debug-iphonesimulator/KrasavaSwiftUI.app"
+          BUNDLE_ID="ru.vibemoments.krasavaswiftui"
+
+          if [ ! -d "$APP" ]; then
+            echo "::warning::Debug-сборка приложения не найдена — снимков не будет."
+            ls -la build/Build/Products 2>/dev/null || true
             exit 0
           fi
-          xcrun xcresulttool export attachments \
-            --path build/TestResults.xcresult \
-            --output-path snapshots || true
-          if [ -f snapshots/manifest.json ]; then
-            python3 tools/rename_attachments.py snapshots || true
-          fi
+
+          xcrun simctl bootstatus "$UDID" -b || true
+          xcrun simctl install "$UDID" "$APP"
+
+          for APPEARANCE in light dark; do
+            xcrun simctl ui "$UDID" appearance "$APPEARANCE" || true
+            for SCREEN in schedule settings about lesson; do
+              xcrun simctl launch --terminate-running-process "$UDID" "$BUNDLE_ID" \
+                -seedDemo YES -screenshotScreen "$SCREEN" > /dev/null
+              sleep 4
+              xcrun simctl io "$UDID" screenshot \
+                "snapshots/${SCREEN}-${APPEARANCE}.png" > /dev/null 2>&1 || true
+            done
+          done
+
           echo "==> Снимков: $(find snapshots -name '*.png' | wc -l)"
-          ls -1 snapshots | head -n 20
+          ls -la snapshots
 
       - name: 📤 Upload UI snapshots
         if: always()

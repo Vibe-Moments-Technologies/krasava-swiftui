@@ -15,6 +15,13 @@ struct KrasavaSwiftUIApp: App {
         store.onScheduleChanged = {
             Task { await Self.rescheduleNotifications(for: store) }
         }
+        #if DEBUG
+        // CI снимает экраны на симуляторе: без этих данных показывать нечего,
+        // а сеть в таком прогоне недоступна.
+        if ScreenshotHarness.isEnabled {
+            store.applyPreviewData()
+        }
+        #endif
         _preferences = State(initialValue: preferences)
         _store = State(initialValue: store)
     }

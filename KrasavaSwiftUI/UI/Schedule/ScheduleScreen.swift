@@ -6,12 +6,45 @@ struct RootView: View {
     @Environment(ScheduleStore.self) private var store
 
     var body: some View {
+        #if DEBUG
+        // CI снимает конкретные экраны: так их видно без ручной навигации.
+        if ScreenshotHarness.isEnabled, ScreenshotHarness.screen != "schedule" {
+            harnessScreen(ScreenshotHarness.screen)
+        } else if store.hasSchedule {
+            ScheduleScreen()
+        } else {
+            EmptyScheduleView()
+        }
+        #else
         if store.hasSchedule {
             ScheduleScreen()
         } else {
             EmptyScheduleView()
         }
+        #endif
     }
+
+    #if DEBUG
+    @ViewBuilder
+    private func harnessScreen(_ screen: String) -> some View {
+        switch screen {
+        case "settings":
+            SettingsSheet()
+        case "about":
+            NavigationStack { AboutView() }
+        case "lesson":
+            NavigationStack {
+                if let lesson = store.allLessons.first {
+                    LessonDetailView(lesson: lesson)
+                } else {
+                    Text(verbatim: "no data")
+                }
+            }
+        default:
+            ScheduleScreen()
+        }
+    }
+    #endif
 }
 
 /// Состояние «расписание не выбрано».
