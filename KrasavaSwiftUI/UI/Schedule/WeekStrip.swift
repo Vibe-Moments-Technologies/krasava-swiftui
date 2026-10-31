@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Мини-календарь: неделя (или две) с точками занятий.
 ///
@@ -34,11 +35,11 @@ struct WeekStrip: View {
             header
             weekPager
         }
-        .padding(.vertical, 10)
+        .padding(.vertical, 8)
         .padding(.horizontal, 12)
         // Стеклянная подложка календаря: он лежит поверх ленты, но управляет
         // ею, поэтому управляющий слой здесь уместен.
-        .glassEffect(.regular, in: .rect(cornerRadius: 24))
+        .glassEffect(.regular, in: .rect(cornerRadius: 20))
     }
 
     // MARK: - Заголовок
@@ -104,7 +105,7 @@ struct WeekStrip: View {
         .scrollTargetBehavior(.paging)
         .scrollPosition(id: $scrolledWeek)
         .scrollIndicators(.hidden)
-        .frame(height: twoWeeks ? 132 : 66)
+        .frame(height: twoWeeks ? 124 : 62)
         .onAppear { scrolledWeek = selectedMonday }
         .onChange(of: scrolledWeek) { _, newValue in
             // Свайп меняет неделю, но не день внутри неё: сохраняем день недели.
@@ -142,7 +143,7 @@ struct WeekStrip: View {
                 Text("\(day.day)")
                     .font(.system(size: 15, weight: isSelected || isToday ? .bold : .semibold))
                     .foregroundStyle(dayNumberColor(isSelected: isSelected, isToday: isToday))
-                    .frame(width: 30, height: 30)
+                    .frame(width: 28, height: 28)
                     .background {
                         if isSelected {
                             Circle().fill(Color.accentColor)
@@ -162,8 +163,13 @@ struct WeekStrip: View {
         .buttonStyle(.plain)
     }
 
+    /// Цвет числа в выбранном дне.
+    ///
+    /// Не `.white`: в тёмной схеме акцент светлый, и белый текст на нём терял
+    /// контраст. Системный фон даёт правильный цвет в обеих схемах — белый
+    /// текст на тёмном акценте и чёрный на светлом.
     private func dayNumberColor(isSelected: Bool, isToday: Bool) -> Color {
-        if isSelected { return .white }
+        if isSelected { return Color(uiColor: .systemBackground) }
         if isToday { return .accentColor }
         return .primary
     }
@@ -193,9 +199,18 @@ struct WeekStrip: View {
         today.mondayOfWeek() == selectedMonday
     }
 
+    /// «Октябрь 2026».
+    ///
+    /// Системный формат для русского добавляет «г.» и оставляет месяц в
+    /// нижнем регистре («октябрь 2026 г.») — в заголовке календаря это
+    /// выглядит как техническая подпись, а не как название месяца.
     private var monthTitle: String {
         guard let date = selectedMonday.date() else { return "" }
-        return date.formatted(.dateTime.month(.wide).year())
+        let raw = date.formatted(.dateTime.month(.wide).year())
+            .replacingOccurrences(of: "г.", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let first = raw.first else { return raw }
+        return String(first).uppercased() + raw.dropFirst()
     }
 
     private func weekdayName(_ day: DayKey) -> String {
