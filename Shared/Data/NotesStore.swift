@@ -58,14 +58,25 @@ struct OverridesStore: Sendable {
 /// Живёт в Application Support, а не в UserDefaults: это данные, которые
 /// пользователь не хочет потерять при переустановке, и они должны попасть
 /// в бэкап вместе с заметками.
+/// Сохранённые расписания и выбранное.
+///
+/// Живёт в Application Support, а не в UserDefaults: пользователь добавлял эти
+/// расписания руками, и они должны попасть в бэкап вместе с заметками.
+/// Список и выбранный хранятся вместе — иначе после падения между двумя
+/// записями выбранным мог оказаться id, которого больше нет в списке.
 struct SelectionStore: Sendable {
     private let storage: AppFileStorage
     private let fileName = "selection.json"
 
     struct Selection: Codable, Sendable {
-        var target: ScheduleTarget?
-        /// Момент последней успешной загрузки — для 30-минутного TTL.
-        var lastSyncAt: Date?
+        var targets: [ScheduleTarget] = []
+        var selectedID: Int?
+        /// Моменты последней успешной загрузки по каждому расписанию — для TTL.
+        var lastSync: [String: Date] = [:]
+
+        func selectedTarget() -> ScheduleTarget? {
+            targets.first { $0.id == selectedID }
+        }
     }
 
     init(storage: AppFileStorage) {

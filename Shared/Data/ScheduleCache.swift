@@ -1,6 +1,6 @@
 import Foundation
 
-/// Что лежит в кэше расписания.
+/// Что лежит в кэше одного расписания.
 ///
 /// Храним правила повторения, а не развёрнутые даты: файл остаётся маленьким,
 /// а окно дат можно менять без перезаписи кэша.
@@ -8,7 +8,7 @@ struct CachedSchedule: Codable, Sendable {
     /// Версия схемы кэша. Несовпадение — кэш считается несовместимым и
     /// перезагружается. Без этого поля любое изменение модели ломало бы
     /// приложение у тех, кто обновился.
-    static let currentSchemaVersion = 1
+    static let currentSchemaVersion = 2
 
     var schemaVersion: Int = CachedSchedule.currentSchemaVersion
     var target: ScheduleTarget
@@ -23,6 +23,36 @@ struct CachedSchedule: Codable, Sendable {
     var isCompatible: Bool { schemaVersion == Self.currentSchemaVersion }
 }
 
+/// Кэш сразу всех сохранённых расписаний.
+///
+/// Один файл вместо файла на расписание: их обычно одно-два, а атомарная
+/// запись целого списка исключает рассинхрон между списком расписаний и их
+/// данными — при раздельном хранении он неизбежен.
+struct CachedSchedules: Codable, Sendable {
+    static let currentSchemaVersion = 2
+
+    var schemaVersion: Int = CachedSchedules.currentSchemaVersion
+    var items: [CachedSchedule] = []
+
+    var isCompatible: Bool { schemaVersion == Self.currentSchemaVersion }
+
+    func schedule(for targetID: Int) -> CachedSchedule? {
+        items.first { $0.target.id == targetID }
+    }
+
+    mutating func upsert(_ schedule: CachedSchedule) {
+        if let index = items.firstIndex(where: { $0.target.id == schedule.target.id }) {
+            items[index] = schedule
+        } else {
+            items.append(schedule)
+        }
+    }
+
+    mutating func remove(targetID: Int) {
+        items.removeAll { $0.target.id == targetID }
+    }
+}
+
 /// Файловое хранилище приложения.
 ///
 /// Разделение каталогов осмысленное и влияет на бэкап:
@@ -35,7 +65,6 @@ struct CachedSchedule: Codable, Sendable {
 struct AppFileStorage: Sendable {
     // `FileManager` не Sendable, поэтому не храним его в поле: тип объявлен
     // Sendable, и хранимое не-Sendable свойство не прошло бы проверку Swift 6.
-    // Обёртка всё равно работает только с общим `FileManager.default`.
     init() {}
 
     private var fileManager: FileManager { .default }
@@ -93,10 +122,10 @@ struct AppFileStorage: Sendable {
     }
 }
 
-/// Кэш расписания в Caches.
+/// Кэш расписаний в Caches.
 struct ScheduleCache: Sendable {
     private let storage: AppFileStorage
-    private let fileName = "schedule.json"
+    private let fileName = "schedules.json"
 
     init(storage: AppFileStorage) {
         self.storage = storage
@@ -106,16 +135,20 @@ struct ScheduleCache: Sendable {
         try storage.cacheDirectory().appending(path: fileName)
     }
 
-    func load() -> CachedSchedule? {
+    func load() -> CachedSchedules {
         guard let url = try? url(),
-              let cached = storage.read(CachedSchedule.self, from: url),
-              cached.isCompatible else { return nil }
+              let cached = storage.read(CachedSchedules.self, from: url),
+              cached.isCompatible else {
+            return CachedSchedules()
+        }
         return cached
     }
 
-    func save(_ schedule: CachedSchedule) {
+    func save(_ schedules: CachedSchedules) {
         guard let url = try? url() else { return }
-        try? storage.write(schedule, to: url)
+        var payload = schedules
+        payload.schemaVersion = CachedSchedules.currentSchemaVersion
+        try? storage.write(payload, to: url)
     }
 
     func clear() {

@@ -28,16 +28,6 @@ struct LessonCard: View {
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(uiColor: .secondarySystemGroupedBackground), in: .rect(cornerRadius: 20))
-        .overlay(alignment: .leading) {
-            // Цветная полоса типа: она же цвет точек в мини-календаре,
-            // поэтому день «читается» одним взглядом.
-            UnevenRoundedRectangle(
-                topLeadingRadius: 20,
-                bottomLeadingRadius: 20
-            )
-            .fill(accent)
-            .frame(width: 3)
-        }
         .overlay(alignment: .bottom) {
             if isToday, preferences.showLessonProgress {
                 LessonProgressBar(start: lesson.start, end: lesson.end)

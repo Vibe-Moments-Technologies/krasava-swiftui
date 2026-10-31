@@ -1,6 +1,198 @@
 {
   "sourceLanguage": "ru",
   "strings": {
+    "about.contact": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Контакты"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contact"
+          }
+        }
+      }
+    },
+    "about.contact.footer": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Приложение неофициальное и развивается в свободное время."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app is unofficial and developed in spare time."
+          }
+        }
+      }
+    },
+    "about.contact.issue": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проблема или идея? Создать Issue"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Problem or idea? Open an issue"
+          }
+        }
+      }
+    },
+    "about.copyright": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "© 2026 Vibe Moments Technologies"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "© 2026 Vibe Moments Technologies"
+          }
+        }
+      }
+    },
+    "about.disclaimer": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наши права защищены · Не связано с РТУ МИРЭА"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All rights reserved · Not affiliated with RTU MIREA"
+          }
+        }
+      }
+    },
+    "about.link.boosty": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поддержать проект"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Support the project"
+          }
+        }
+      }
+    },
+    "about.link.repository": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Репозиторий на GitHub"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repository on GitHub"
+          }
+        }
+      }
+    },
+    "about.link.telegram": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram"
+          }
+        }
+      }
+    },
+    "about.links": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ссылки"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Links"
+          }
+        }
+      }
+    },
+    "about.team": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Команда проекта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Project team"
+          }
+        }
+      }
+    },
+    "about.team.footer": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разработчики и контрибьюторы"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Developers and contributors"
+          }
+        }
+      }
+    },
+    "about.team.role": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разработчик"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Developer"
+          }
+        }
+      }
+    },
     "app.title": {
       "localizations": {
         "ru": {
@@ -817,6 +1009,22 @@
         }
       }
     },
+    "schedule.add": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить расписание"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add schedule"
+          }
+        }
+      }
+    },
     "schedule.change": {
       "localizations": {
         "ru": {
@@ -961,6 +1169,22 @@
         }
       }
     },
+    "settings.about": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "О программе"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About"
+          }
+        }
+      }
+    },
     "settings.about.footer": {
       "localizations": {
         "ru": {
@@ -1025,6 +1249,22 @@
         }
       }
     },
+    "settings.appearance": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оформление"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appearance"
+          }
+        }
+      }
+    },
     "settings.autoScroll": {
       "localizations": {
         "ru": {
@@ -1053,6 +1293,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Break progress"
+          }
+        }
+      }
+    },
+    "settings.calendar": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Календарь"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendar"
           }
         }
       }
@@ -1117,6 +1373,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Class progress"
+          }
+        }
+      }
+    },
+    "settings.notifications": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Уведомления"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications"
           }
         }
       }
@@ -1217,6 +1489,22 @@
         }
       }
     },
+    "settings.progress": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогресс и индикаторы"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progress and indicators"
+          }
+        }
+      }
+    },
     "settings.remove.confirm": {
       "localizations": {
         "ru": {
@@ -1261,6 +1549,102 @@
           "stringUnit": {
             "state": "translated",
             "value": "Delete saved schedule"
+          }
+        }
+      }
+    },
+    "settings.schedule": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расписание"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schedule"
+          }
+        }
+      }
+    },
+    "settings.schedules": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавленные расписания"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved schedules"
+          }
+        }
+      }
+    },
+    "settings.schedules.footer": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расписания хранятся на устройстве. Свайп влево по строке — удалить."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schedules are stored on this device. Swipe left on a row to delete."
+          }
+        }
+      }
+    },
+    "settings.schedules.remove": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        }
+      }
+    },
+    "settings.schedules.remove.message": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вместе с расписанием удалятся заметки к его парам и предметам."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notes for its classes and subjects will be deleted too."
+          }
+        }
+      }
+    },
+    "settings.schedules.remove.title": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить расписание?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete schedule?"
           }
         }
       }
@@ -1453,6 +1837,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Two weeks in calendar"
+          }
+        }
+      }
+    },
+    "settings.types": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цвета типов занятий"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Class type colors"
           }
         }
       }

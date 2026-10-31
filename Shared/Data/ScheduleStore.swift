@@ -6,6 +6,11 @@ import Observation
 /// Единственное место, где меняются данные расписания. Экраны читают отсюда
 /// и вызывают методы — никаких собственных копий состояния и никаких сетевых
 /// вызовов из вью.
+///
+/// Производительность: развёрнутые занятия считаются **один раз** при смене
+/// данных и складываются в `allLessons`/`lessonsByDay`. Раньше они считались
+/// на каждое обращение, и лента из сотни страниц разворачивала правила
+/// повторения на каждый кадр — отсюда были лаги на кнопках.
 @MainActor
 @Observable
 final class ScheduleStore {
@@ -23,20 +28,24 @@ final class ScheduleStore {
     private let selectionStore: SelectionStore
     let preferences: Preferences
 
-    // MARK: - Состояние расписания
+    // MARK: - Состояние
 
-    private(set) var target: ScheduleTarget?
-    private(set) var occurrences: [Occurrence] = []
-    private(set) var weekMarkers: [WeekMarker] = []
-    private(set) var semesterStart: DayKey?
-    private(set) var semesterEnd: DayKey?
-    private(set) var fetchedAt: Date?
+    private(set) var savedTargets: [ScheduleTarget] = []
+    private(set) var selectedTargetID: Int?
 
-    // MARK: - Состояние интерфейса
+    private var cached = CachedSchedules()
+    /// Правила повторения выбранного расписания.
+    private var occurrences: [Occurrence] = []
+
+    // Развёрнутые данные выбранного расписания — пересчитываются при изменениях.
+    private(set) var allLessons: [Lesson] = []
+    private(set) var lessonsByDay: [DayKey: [Lesson]] = [:]
+    private(set) var dayTypes: [DayKey: [LessonType]] = [:]
+    private(set) var weekCalculator = WeekCalculator(markers: [])
 
     private(set) var isLoading = false
     private(set) var errorMessage: String?
-    /// Изменения, найденные при последнем обновлении. Пусто — показывать нечего.
+    /// Изменения, найденные при последнем обновлении.
     private(set) var pendingChanges: [ScheduleChange] = []
     /// Дата, которую сейчас показывает лента.
     var selectedDay: DayKey
@@ -44,7 +53,11 @@ final class ScheduleStore {
     // MARK: - Пользовательские данные
 
     var overrides: UserOverrides {
-        didSet { overridesStore.save(overrides); publishDownstream() }
+        didSet {
+            overridesStore.save(overrides)
+            rebuildDerived()
+            publishDownstream()
+        }
     }
     private(set) var notes: [LessonNote]
 
@@ -53,8 +66,6 @@ final class ScheduleStore {
     /// Приложение подключает сюда перепланирование напоминаний. Сделано
     /// замыканием, а не прямой зависимостью: `Shared` компилируется и в
     /// виджет, который не имеет права работать с `UserNotifications`.
-    /// Изоляция `@MainActor` явная — хук вызывается из главного актора,
-    /// и его реализация ожидает того же.
     var onScheduleChanged: (@MainActor () -> Void)?
 
     init(
@@ -70,97 +81,65 @@ final class ScheduleStore {
         self.selectionStore = SelectionStore(storage: storage)
 
         let selection = selectionStore.load()
-        self.target = selection.target
-        self.fetchedAt = selection.lastSyncAt
+        self.savedTargets = selection.targets
+        self.selectedTargetID = selection.selectedID ?? selection.targets.first?.id
+        self.cached = cache.load()
         self.overrides = overridesStore.load()
         self.notes = notesStore.load()
         self.selectedDay = ScheduleClock.today()
+
+        loadSelectedOccurrences()
+        rebuildDerived()
     }
 
     // MARK: - Производные данные
+
+    var selectedTarget: ScheduleTarget? {
+        guard let selectedTargetID else { return nil }
+        return savedTargets.first { $0.id == selectedTargetID }
+    }
+
+    var hasSchedule: Bool { selectedTarget != nil }
 
     /// Окно дат, в котором считается расписание.
     var window: ScheduleBuilder.Window {
         ScheduleBuilder.Window.around(ScheduleClock.today())
     }
 
-    private var builder: ScheduleBuilder {
-        ScheduleBuilder(occurrences: occurrences, window: window)
-    }
-
-    /// Все занятия в окне, без учёта видимости.
-    var allLessons: [Lesson] {
-        builder.lessonsByDay().values.flatMap { $0 }
-    }
-
-    /// Занятия по дням с учётом скрытых предметов и доп. занятий.
-    var lessonsByDay: [DayKey: [Lesson]] {
-        let filter = VisibilityFilter(
-            hideAdditional: preferences.hideAdditional,
-            hiddenSubjects: overrides.hiddenSubjects
-        )
-        return builder.lessonsByDay().mapValues { filter.visible($0, overrides: overrides) }
-    }
-
-    var weekCalculator: WeekCalculator {
-        WeekCalculator(markers: weekMarkers)
-    }
-
-    /// Точки-индикаторы в мини-календаре: типы занятий по дням.
-    var dayTypeSummary: [DayKey: [LessonType]] {
-        lessonsByDay.mapValues { lessons in
-            // По одной точке на пару; при двух занятиях в одном слоте — обе.
-            lessons
-                .sorted { $0.bell < $1.bell }
-                .map { overrides.effectiveType(for: $0) }
-        }
-    }
-
     func lessons(on day: DayKey) -> [Lesson] {
         lessonsByDay[day] ?? []
     }
 
+    /// Слоты дня. Строятся из уже развёрнутых занятий — без пересчёта правил.
     func slots(on day: DayKey) -> [DaySlot] {
-        builder.slots(
-            for: day,
-            lessons: lessons(on: day),
-            showEmpty: preferences.showEmptyLessons
-        )
+        ScheduleBuilder(occurrences: [], window: window)
+            .slots(for: day, lessons: lessons(on: day), showEmpty: preferences.showEmptyLessons)
     }
 
-    var hasSchedule: Bool { target != nil }
+    var selectedFetchedAt: Date? {
+        guard let selectedTargetID else { return nil }
+        return cached.schedule(for: selectedTargetID)?.fetchedAt
+    }
 
-    /// Кэш считается устаревшим после TTL.
+    /// Кэш выбранного расписания считается устаревшим после TTL.
     var isCacheStale: Bool {
-        guard let fetchedAt else { return true }
+        guard let fetchedAt = selectedFetchedAt else { return true }
         return Date().timeIntervalSince(fetchedAt) >= Self.cacheTTL
     }
 
     // MARK: - Жизненный цикл
 
     /// Загрузка при старте: сначала кэш (мгновенно), потом тихое обновление.
-    ///
-    /// Порядок важен: приложение никогда не показывает пустой экран, если в
-    /// кэше уже что-то есть. Сеть — второстепенный источник.
     func bootstrap() async {
-        restoreFromCache()
-        guard target != nil else { return }
+        guard hasSchedule else { return }
         if isCacheStale {
             await refresh(silent: true)
         }
     }
 
-    private func restoreFromCache() {
-        guard let cached = cache.load(), cached.target.id == target?.id else { return }
-        apply(cached)
-    }
-
-    /// Перезагрузка расписания из сети.
-    ///
-    /// `silent` — фоновое обновление: без индикатора и без экрана ошибки,
-    /// потому что на экране уже есть данные.
+    /// Перезагрузка выбранного расписания из сети.
     func refresh(silent: Bool = false) async {
-        guard let target else { return }
+        guard let target = selectedTarget else { return }
         if !silent { isLoading = true }
         defer { if !silent { isLoading = false } }
 
@@ -184,13 +163,15 @@ final class ScheduleStore {
                 semesterEnd: feed.semesterEnd,
                 fetchedAt: Date()
             )
-            cache.save(schedule)
-            apply(schedule)
+            cached.upsert(schedule)
+            cache.save(cached)
+
+            occurrences = schedule.occurrences
+            rebuildDerived()
             errorMessage = nil
             persistSelection()
 
-            // Изменения считаем только если раньше было с чем сравнивать:
-            // при первой загрузке «добавлено всё» — это не новость.
+            // Изменения считаем только если раньше было с чем сравнивать.
             if !old.isEmpty {
                 pendingChanges = DiffEngine.diff(
                     old: old,
@@ -208,37 +189,65 @@ final class ScheduleStore {
         }
     }
 
-    /// Выбор расписания и первичная загрузка.
-    func select(_ newTarget: ScheduleTarget) async {
-        if target?.id != newTarget.id {
-            target = newTarget
-            occurrences = []
-            weekMarkers = []
-            semesterStart = nil
-            semesterEnd = nil
-            fetchedAt = nil
-            pendingChanges = []
-            selectedDay = ScheduleClock.today()
+    /// Добавить расписание в список и открыть его.
+    func addTarget(_ target: ScheduleTarget) async {
+        if !savedTargets.contains(where: { $0.id == target.id }) {
+            savedTargets.append(target)
         }
+        selectedTargetID = target.id
+        pendingChanges = []
+        selectedDay = ScheduleClock.today()
+        loadSelectedOccurrences()
         persistSelection()
+        rebuildDerived()
         await refresh(silent: false)
     }
 
-    /// Убрать сохранённое расписание вместе с его данными.
+    /// Переключиться на сохранённое расписание.
+    func select(targetID: Int) {
+        guard selectedTargetID != targetID else { return }
+        selectedTargetID = targetID
+        pendingChanges = []
+        selectedDay = ScheduleClock.today()
+        loadSelectedOccurrences()
+        persistSelection()
+        rebuildDerived()
+        publishDownstream()
+
+        // Данные могли устареть, пока расписание было неактивным.
+        if isCacheStale {
+            Task { await refresh(silent: true) }
+        }
+    }
+
+    /// Убрать расписание из списка вместе с его кэшем и заметками.
     ///
     /// Заметки удаляются только здесь и только по явному действию пользователя.
     /// В оригинале каскад срабатывал на обновлении — это и стирало заметки.
-    func removeSchedule() {
-        cache.clear()
-        WidgetSnapshotWriter.clear()
-        target = nil
-        occurrences = []
-        weekMarkers = []
-        fetchedAt = nil
-        pendingChanges = []
-        notes = []
+    func removeTarget(id: Int) {
+        savedTargets.removeAll { $0.id == id }
+        cached.remove(targetID: id)
+        cache.save(cached)
+        notes.removeAll { $0.key.contains(":\(id):") }
         notesStore.save(notes)
+
+        if selectedTargetID == id {
+            selectedTargetID = savedTargets.first?.id
+            selectedDay = ScheduleClock.today()
+            loadSelectedOccurrences()
+        }
         persistSelection()
+        rebuildDerived()
+        publishDownstream()
+    }
+
+    /// Настройки отображения изменились — производные данные надо пересобрать.
+    ///
+    /// Вызывается из UI после правки `Preferences`: стор не наблюдает за
+    /// настройками напрямую, поэтому изменение приходит явным сигналом.
+    func preferencesDidChange() {
+        rebuildDerived()
+        publishDownstream()
     }
 
     // MARK: - Заметки
@@ -248,28 +257,27 @@ final class ScheduleStore {
     }
 
     func text(forLesson lesson: Lesson) -> String {
-        guard let target else { return "" }
-        let key = NoteKeys.lesson(targetID: target.id, day: lesson.day, bell: lesson.bell)
+        guard let selectedTargetID else { return "" }
+        let key = NoteKeys.lesson(targetID: selectedTargetID, day: lesson.day, bell: lesson.bell)
         return note(for: key)?.text ?? ""
     }
 
     func text(forSubject subject: String) -> String {
-        guard let target else { return "" }
-        let key = NoteKeys.subject(targetID: target.id, subject: subject)
-        return note(for: key)?.text ?? ""
+        guard let selectedTargetID else { return "" }
+        return note(for: NoteKeys.subject(targetID: selectedTargetID, subject: subject))?.text ?? ""
     }
 
-    /// Сохранение заметки. Пустой текст удаляет запись, чтобы не копить пустые.
     func setNote(_ text: String, forLesson lesson: Lesson) {
-        guard let target else { return }
-        let key = NoteKeys.lesson(targetID: target.id, day: lesson.day, bell: lesson.bell)
-        upsertNote(key: key, text: text)
+        guard let selectedTargetID else { return }
+        upsertNote(
+            key: NoteKeys.lesson(targetID: selectedTargetID, day: lesson.day, bell: lesson.bell),
+            text: text
+        )
     }
 
     func setNote(_ text: String, forSubject subject: String) {
-        guard let target else { return }
-        let key = NoteKeys.subject(targetID: target.id, subject: subject)
-        upsertNote(key: key, text: text)
+        guard let selectedTargetID else { return }
+        upsertNote(key: NoteKeys.subject(targetID: selectedTargetID, subject: subject), text: text)
     }
 
     private func upsertNote(key: String, text: String) {
@@ -291,27 +299,59 @@ final class ScheduleStore {
         pendingChanges = []
     }
 
-    private func apply(_ schedule: CachedSchedule) {
+    private func loadSelectedOccurrences() {
+        guard let selectedTargetID, let schedule = cached.schedule(for: selectedTargetID) else {
+            occurrences = []
+            return
+        }
         occurrences = schedule.occurrences
-        weekMarkers = schedule.weekMarkers
-        semesterStart = schedule.semesterStart
-        semesterEnd = schedule.semesterEnd
-        fetchedAt = schedule.fetchedAt
+    }
+
+    /// Пересборка развёрнутых данных. Вызывается только при реальных изменениях.
+    private func rebuildDerived() {
+        guard let selectedTargetID, let schedule = cached.schedule(for: selectedTargetID) else {
+            allLessons = []
+            lessonsByDay = [:]
+            dayTypes = [:]
+            weekCalculator = WeekCalculator(markers: [])
+            return
+        }
+
+        weekCalculator = WeekCalculator(markers: schedule.weekMarkers)
+
+        let filter = VisibilityFilter(
+            hideAdditional: preferences.hideAdditional,
+            hiddenSubjects: overrides.hiddenSubjects
+        )
+        let byDay = ScheduleBuilder(occurrences: schedule.occurrences, window: window)
+            .lessonsByDay()
+            .mapValues { filter.visible($0, overrides: overrides) }
+
+        lessonsByDay = byDay
+        allLessons = byDay.values.flatMap { $0 }
+        dayTypes = byDay.mapValues { lessons in
+            lessons
+                .sorted { $0.bell < $1.bell }
+                .map { overrides.effectiveType(for: $0) }
+        }
     }
 
     private func persistSelection() {
-        selectionStore.save(
-            SelectionStore.Selection(target: target, lastSyncAt: fetchedAt)
+        var selection = SelectionStore.Selection()
+        selection.targets = savedTargets
+        selection.selectedID = selectedTargetID
+        selection.lastSync = Dictionary(
+            uniqueKeysWithValues: cached.items.map { (String($0.target.id), $0.fetchedAt) }
         )
+        selectionStore.save(selection)
     }
 
     /// Публикация данных наружу: снимок для виджета и перепланирование
-    /// напоминаний. Оба шага должны видеть одно и то же состояние, поэтому
-    /// вызываются только отсюда.
+    /// напоминаний. Оба шага должны видеть одно и то же состояние.
     private func publishDownstream() {
         WidgetSnapshotWriter.write(
             WidgetSnapshotWriter.makeSnapshot(
-                targetTitle: target?.displayTitle,
+                targetTitle: selectedTarget?.displayTitle,
                 lessons: allLessons,
                 overrides: overrides,
                 today: ScheduleClock.today()

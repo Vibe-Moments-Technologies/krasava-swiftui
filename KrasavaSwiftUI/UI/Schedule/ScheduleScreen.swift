@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Корневое представление: либо расписание, либо приглашение его добавить.
 struct RootView: View {
@@ -14,9 +15,6 @@ struct RootView: View {
 }
 
 /// Состояние «расписание не выбрано».
-///
-/// Отдельный экран, а не пустой список: пользователь должен понимать, что
-/// нужно сделать, а не гадать, почему лента пустая.
 struct EmptyScheduleView: View {
     @Environment(ScheduleStore.self) private var store
     @State private var showSearch = false
@@ -39,14 +37,14 @@ struct EmptyScheduleView: View {
             .sheet(isPresented: $showSearch) {
                 SearchSheet { target in
                     showSearch = false
-                    Task { await store.select(target) }
+                    Task { await store.addTarget(target) }
                 }
             }
         }
     }
 }
 
-/// Основной экран: мини-календарь и лента дня.
+/// Основной экран: стеклянная шапка с выбором расписания, мини-календарь и лента.
 struct ScheduleScreen: View {
     @Environment(ScheduleStore.self) private var store
     @Environment(Preferences.self) private var preferences
@@ -60,28 +58,33 @@ struct ScheduleScreen: View {
 
         NavigationStack {
             VStack(spacing: 0) {
+                header
+
                 if !preferences.calendarCollapsed {
                     WeekStrip(
                         selectedDay: store.selectedDay,
                         calculator: store.weekCalculator,
-                        dayTypes: store.dayTypeSummary,
+                        dayTypes: store.dayTypes,
                         overrides: store.overrides,
                         twoWeeks: preferences.calendarTwoWeeks,
                         onSelect: { store.selectedDay = $0 }
                     )
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 6)
                     .transition(.move(edge: .top).combined(with: .opacity))
                 }
 
                 DayPager(selectedDay: $store.selectedDay)
             }
+            // Системный фон на всю площадь, включая зону домашнего индикатора:
+            // без него внизу оставалась чёрная полоса окна.
+            .background(Color(uiColor: .systemBackground).ignoresSafeArea())
             .animation(.snappy(duration: 0.25), value: preferences.calendarCollapsed)
-            .navigationTitle(store.target?.displayTitle ?? "")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar { toolbarContent }
+            .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $showSearch) {
                 SearchSheet { target in
                     showSearch = false
-                    Task { await store.select(target) }
+                    Task { await store.addTarget(target) }
                 }
             }
             .sheet(isPresented: $showSettings) {
@@ -96,124 +99,154 @@ struct ScheduleScreen: View {
             .navigationDestination(for: Lesson.self) { lesson in
                 LessonDetailView(lesson: lesson)
             }
-            .overlay(alignment: .bottom) { floatingBar }
         }
     }
 
-    @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
-            if !store.pendingChanges.isEmpty {
-                Button {
-                    showChanges = true
-                } label: {
-                    Label {
-                        Text("changes.title")
-                    } icon: {
-                        Image(systemName: "arrow.triangle.2.circlepath")
+    // MARK: - Шапка
+
+    /// Стеклянная шапка. Навигационная панель скрыта намеренно: только так
+    /// стекло кнопок читается как стекло, а не как стекло поверх стекла.
+    private var header: some View {
+        GlassEffectContainer(spacing: 10) {
+            HStack(spacing: 8) {
+                scheduleSelector
+
+                Spacer(minLength: 0)
+
+                if !store.pendingChanges.isEmpty {
+                    glassButton(
+                        systemImage: "arrow.triangle.2.circlepath",
+                        count: store.pendingChanges.count
+                    ) {
+                        showChanges = true
                     }
                 }
-            }
-        }
 
-        ToolbarItem(placement: .topBarTrailing) {
-            Menu {
-                Button {
-                    showSearch = true
-                } label: {
-                    Label("schedule.change", systemImage: "magnifyingglass")
-                }
-                Button {
+                glassButton(systemImage: "arrow.clockwise", rotates: store.isLoading) {
                     Task { await store.refresh() }
-                } label: {
-                    Label("schedule.refresh", systemImage: "arrow.clockwise")
                 }
-                Divider()
-                Button {
-                    showSettings = true
-                } label: {
-                    Label("settings.title", systemImage: "slider.horizontal.3")
-                }
-            } label: {
-                Image(systemName: "ellipsis.circle")
-            }
-        }
-    }
-
-    /// Плавающая панель управления. Стекло здесь уместно: это управляющий
-    /// слой поверх контента, а не сам контент.
-    private var floatingBar: some View {
-        GlassEffectContainer(spacing: 12) {
-            HStack(spacing: 12) {
-                let isToday = store.selectedDay == ScheduleClock.today()
-                if !isToday {
-                    Button {
-                        store.selectedDay = ScheduleClock.today()
-                    } label: {
-                        Label("common.today", systemImage: "calendar")
-                            .labelStyle(.titleAndIcon)
-                    }
-                    .buttonStyle(.glass)
-                }
-
-                Button {
-                    Task { await store.refresh() }
-                } label: {
-                    if store.isLoading {
-                        ProgressView()
-                    } else {
-                        Label("schedule.refresh", systemImage: "arrow.clockwise")
-                            .labelStyle(.iconOnly)
-                    }
-                }
-                .buttonStyle(.glassProminent)
                 .disabled(store.isLoading)
+
+                glassButton(systemImage: "plus") {
+                    showSearch = true
+                }
+
+                glassButton(systemImage: "slider.horizontal.3") {
+                    showSettings = true
+                }
             }
-            .padding(6)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
         }
-        .padding(.bottom, 12)
+    }
+
+    /// Выбор расписания слева: стеклянная капсула с меню.
+    private var scheduleSelector: some View {
+        Menu {
+            ForEach(store.savedTargets) { target in
+                Button {
+                    store.select(targetID: target.id)
+                } label: {
+                    if target.id == store.selectedTargetID {
+                        Label(target.displayTitle, systemImage: "checkmark")
+                    } else {
+                        Text(verbatim: target.displayTitle)
+                    }
+                }
+            }
+
+            Divider()
+
+            Button {
+                showSearch = true
+            } label: {
+                Label("schedule.add", systemImage: "plus")
+            }
+        } label: {
+            HStack(spacing: 5) {
+                Text(verbatim: store.selectedTarget?.displayTitle ?? "")
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 9)
+            .glassEffect(.regular.interactive(), in: .capsule(style: .continuous))
+        }
+    }
+
+    private func glassButton(
+        systemImage: String,
+        count: Int? = nil,
+        rotates: Bool = false,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            ZStack(alignment: .topTrailing) {
+                Image(systemName: systemImage)
+                    .font(.system(size: 15, weight: .semibold))
+                    .frame(width: 34, height: 34)
+
+                if let count, count > 0 {
+                    Text("\(count)")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 4)
+                        .frame(minWidth: 14, minHeight: 14)
+                        .background(Color.accentColor, in: .capsule)
+                        .offset(x: 3, y: -3)
+                }
+            }
+            .glassEffect(.regular.interactive(), in: .circle)
+        }
+        .buttonStyle(.plain)
     }
 }
 
 /// Лента дней с горизонтальным листанием.
 ///
-/// Бесконечная в обе стороны идея из оригинала сохранена, но реализована
-/// окном ±100 дней: этого достаточно, чтобы листать семестр в обе стороны,
-/// и при этом не держать сотни страниц в памяти.
+/// `ScrollView` + `LazyHStack` вместо `TabView(.page)`: страницы создаются по
+/// мере появления. Вариант с `TabView` держал в памяти все двести страниц, и
+/// каждое нажатие пересобирало их — это и было причиной лагов.
 struct DayPager: View {
     @Binding var selectedDay: DayKey
-    @Environment(ScheduleStore.self) private var store
+    @State private var scrolledID: DayKey?
 
-    private static let span = 100
-
-    @State private var page: Int
-
-    init(selectedDay: Binding<DayKey>) {
-        _selectedDay = selectedDay
+    /// Окно листания: примерно семестр в обе стороны от сегодня.
+    private var days: [DayKey] {
         let today = ScheduleClock.today()
-        _page = State(
-            initialValue: min(max(Self.span + today.days(until: selectedDay.wrappedValue), 0), Self.span * 2)
-        )
+        let offset = today.days(until: selectedDay)
+        let lower = max(min(offset, 0), -120)
+        let upper = min(max(offset, 0), 120)
+        return (lower...upper).map { today.adding(days: $0) }
     }
 
     var body: some View {
-        let today = ScheduleClock.today()
-
-        TabView(selection: $page) {
-            ForEach(0...(Self.span * 2), id: \.self) { index in
-                DayPage(day: today.adding(days: index - Self.span))
-                    .tag(index)
+        ScrollView(.horizontal) {
+            LazyHStack(spacing: 0) {
+                ForEach(days, id: \.self) { day in
+                    DayPage(day: day)
+                        .containerRelativeFrame(.horizontal)
+                        .id(day)
+                }
+            }
+            .scrollTargetLayout()
+        }
+        .scrollTargetBehavior(.paging)
+        .scrollPosition(id: $scrolledID)
+        .scrollIndicators(.hidden)
+        .onAppear { scrolledID = selectedDay }
+        .onChange(of: scrolledID) { _, newValue in
+            if let newValue, newValue != selectedDay {
+                selectedDay = newValue
             }
         }
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        .onChange(of: page) { _, newValue in
-            let day = today.adding(days: newValue - Self.span)
-            if day != selectedDay { selectedDay = day }
-        }
         .onChange(of: selectedDay) { _, newValue in
-            let offset = today.days(until: newValue)
-            let target = min(max(Self.span + offset, 0), Self.span * 2)
-            if target != page { page = target }
+            if scrolledID != newValue {
+                scrolledID = newValue
+            }
         }
     }
 }
@@ -222,7 +255,6 @@ struct DayPager: View {
 struct DayPage: View {
     let day: DayKey
     @Environment(ScheduleStore.self) private var store
-    @Environment(Preferences.self) private var preferences
 
     var body: some View {
         let slots = store.slots(on: day)
@@ -273,8 +305,8 @@ struct DayPage: View {
                         }
                     }
                     .padding(.horizontal, 16)
-                    .padding(.top, 8)
-                    .padding(.bottom, 96)
+                    .padding(.top, 4)
+                    .padding(.bottom, 24)
                 }
             }
         }
@@ -306,18 +338,22 @@ struct BreakRow: View {
     private var progressOverlay: some View {
         if isToday, preferences.showBreakProgress {
             TimelineView(.periodic(from: .now, by: 60)) { context in
-                let now = Self.minutes(of: context.date)
-                if now >= start.minutesSinceMidnight, now < end.minutesSinceMidnight {
-                    GeometryReader { geometry in
-                        let total = max(end.minutesSinceMidnight - start.minutesSinceMidnight, 1)
-                        let passed = Double(now - start.minutesSinceMidnight) / Double(total)
-                        Capsule()
-                            .fill(Color.accentColor.opacity(0.25))
-                            .frame(width: geometry.size.width * passed)
-                    }
-                    .frame(height: 2)
-                }
+                progressView(now: Self.minutes(of: context.date))
             }
+        }
+    }
+
+    @ViewBuilder
+    private func progressView(now: Int) -> some View {
+        if now >= start.minutesSinceMidnight, now < end.minutesSinceMidnight {
+            GeometryReader { geometry in
+                let total = max(end.minutesSinceMidnight - start.minutesSinceMidnight, 1)
+                let passed = Double(now - start.minutesSinceMidnight) / Double(total)
+                Capsule()
+                    .fill(Color.accentColor.opacity(0.25))
+                    .frame(width: geometry.size.width * passed)
+            }
+            .frame(height: 2)
         }
     }
 
@@ -335,7 +371,7 @@ struct EmptySlotCard: View {
 
     var body: some View {
         HStack {
-            Text(verbatim: Labels.bell(bell) + " · \(start.description)–\(end.description)")
+            Text(verbatim: "\(Labels.bell(bell)) · \(start.description)–\(end.description)")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
             Spacer()

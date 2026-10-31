@@ -2,9 +2,9 @@ import SwiftUI
 
 /// Мини-календарь: неделя (или две) с точками занятий.
 ///
-/// Показывает ровно ту неделю, в которую попадает выбранный день. Стрелки
-/// сдвигают выбор на неделю — так календарь и лента всегда согласованы, и
-/// невозможно «уехать» календарём в одну сторону, а лентой в другую.
+/// Недели листаются свайпом — как в системном календаре. Стрелки остались как
+/// дополнительный способ: ими удобно целиться на одну неделю, а свайпом
+/// быстрее пролистать месяц.
 struct WeekStrip: View {
     let selectedDay: DayKey
     let calculator: WeekCalculator
@@ -14,32 +14,38 @@ struct WeekStrip: View {
     let onSelect: (DayKey) -> Void
 
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(Preferences.self) private var preferences
+    @State private var scrolledWeek: DayKey?
 
     private var today: DayKey { ScheduleClock.today() }
-    private var monday: DayKey { selectedDay.mondayOfWeek() }
+    private var selectedMonday: DayKey { selectedDay.mondayOfWeek() }
     private var weekNumber: Int { calculator.weekNumber(for: selectedDay) }
 
-    var body: some View {
-        VStack(spacing: 8) {
-            header
-            rows
-        }
-        .padding(.top, 4)
-        .padding(.bottom, 8)
-        .background(.bar)
+    /// Понедельники в пределах примерно года в обе стороны.
+    private var weeks: [DayKey] {
+        let base = today.mondayOfWeek()
+        let offset = base.days(until: selectedMonday) / 7
+        let lower = max(min(offset, 0), -52)
+        let upper = min(max(offset, 0), 52)
+        return (lower...upper).map { base.adding(days: $0 * 7) }
     }
+
+    var body: some View {
+        VStack(spacing: 6) {
+            header
+            weekPager
+        }
+        .padding(.vertical, 10)
+        .padding(.horizontal, 12)
+        // Стеклянная подложка календаря: он лежит поверх ленты, но управляет
+        // ею, поэтому управляющий слой здесь уместен.
+        .glassEffect(.regular, in: .rect(cornerRadius: 24))
+    }
+
+    // MARK: - Заголовок
 
     private var header: some View {
         HStack(spacing: 4) {
-            Button {
-                shift(weeks: -1)
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.footnote.weight(.semibold))
-            }
-            .buttonStyle(.plain)
-            .frame(width: 32)
+            arrowButton(systemImage: "chevron.left") { shift(weeks: -1) }
 
             Spacer(minLength: 0)
 
@@ -54,31 +60,56 @@ struct WeekStrip: View {
             Spacer(minLength: 0)
 
             if !isCurrentWeek {
-                Button("common.today") {
-                    onSelect(today)
-                }
-                .font(.caption.weight(.semibold))
-                .buttonStyle(.glass)
+                Button("common.today") { onSelect(today) }
+                    .font(.caption.weight(.semibold))
+                    .buttonStyle(.glass)
             }
 
-            Button {
-                shift(weeks: 1)
-            } label: {
-                Image(systemName: "chevron.right")
-                    .font(.footnote.weight(.semibold))
-            }
-            .buttonStyle(.plain)
-            .frame(width: 32)
+            arrowButton(systemImage: "chevron.right") { shift(weeks: 1) }
         }
-        .padding(.horizontal, 12)
     }
 
-    private var rows: some View {
-        VStack(spacing: 6) {
-            weekRow(startingAt: monday)
-            if twoWeeks {
-                weekRow(startingAt: monday.adding(days: 7))
+    private func arrowButton(systemImage: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: 12, weight: .semibold))
+                .frame(width: 28, height: 28)
+        }
+        .buttonStyle(.glass)
+    }
+
+    // MARK: - Лента недель
+
+    private var weekPager: some View {
+        ScrollView(.horizontal) {
+            LazyHStack(spacing: 0) {
+                ForEach(weeks, id: \.self) { monday in
+                    VStack(spacing: 6) {
+                        weekRow(startingAt: monday)
+                        if twoWeeks {
+                            weekRow(startingAt: monday.adding(days: 7))
+                        }
+                    }
+                    .containerRelativeFrame(.horizontal)
+                    .id(monday)
+                }
             }
+            .scrollTargetLayout()
+        }
+        .scrollTargetBehavior(.paging)
+        .scrollPosition(id: $scrolledWeek)
+        .scrollIndicators(.hidden)
+        .frame(height: twoWeeks ? 132 : 66)
+        .onAppear { scrolledWeek = selectedMonday }
+        .onChange(of: scrolledWeek) { _, newValue in
+            // Свайп меняет неделю, но не день внутри неё: сохраняем день недели.
+            guard let newValue else { return }
+            let weekdayOffset = selectedDay.isoWeekday() - 1
+            let day = newValue.adding(days: weekdayOffset)
+            if day != selectedDay { onSelect(day) }
+        }
+        .onChange(of: selectedMonday) { _, newValue in
+            if scrolledWeek != newValue { scrolledWeek = newValue }
         }
     }
 
@@ -88,7 +119,6 @@ struct WeekStrip: View {
                 dayCell(first.adding(days: offset))
             }
         }
-        .padding(.horizontal, 8)
     }
 
     private func dayCell(_ day: DayKey) -> some View {
@@ -133,8 +163,7 @@ struct WeekStrip: View {
         return .primary
     }
 
-    /// До пяти точек в строке, остальное — во второй. Больше двух строк
-    /// в мини-календаре не бывает: в дне не бывает 12 пар.
+    /// До пяти точек в строке, остальное — во второй.
     private func dots(for types: [LessonType]) -> some View {
         let firstRow = Array(types.prefix(5))
         let secondRow = Array(types.dropFirst(5).prefix(5))
@@ -156,20 +185,18 @@ struct WeekStrip: View {
     }
 
     private var isCurrentWeek: Bool {
-        today.mondayOfWeek() == monday
+        today.mondayOfWeek() == selectedMonday
     }
 
     private var monthTitle: String {
-        let date = monday.date()
-        guard let date else { return "" }
+        guard let date = selectedMonday.date() else { return "" }
         return date.formatted(.dateTime.month(.wide).year())
     }
 
     private func weekdayName(_ day: DayKey) -> String {
         guard let date = day.date() else { return "" }
-        // `.veryShort` даёт «П», «В»; нужен двухбуквенный «Пн» — берём
-        // узкий формат и обрезаем до двух символов, чтобы не заводить
-        // собственный словарь дней недели.
+        // Двухбуквенная подпись («Пн») без собственного словаря дней недели:
+        // берём узкий локализованный формат и обрезаем.
         let formatted = date.formatted(.dateTime.weekday(.abbreviated))
         return String(formatted.prefix(2))
     }
