@@ -160,10 +160,6 @@ struct ScheduleScreen: View {
                 }
                 .disabled(store.isLoading)
 
-                glassButton(systemImage: "plus") {
-                    showSearch = true
-                }
-
                 glassButton(systemImage: "slider.horizontal.3") {
                     showSettings = true
                 }
@@ -240,46 +236,47 @@ struct ScheduleScreen: View {
 
 /// Лента дней с горизонтальным листанием.
 ///
-/// `ScrollView` + `LazyHStack` вместо `TabView(.page)`: страницы создаются по
-/// мере появления. Вариант с `TabView` держал в памяти все двести страниц, и
-/// каждое нажатие пересобирало их — это и было причиной лагов.
+/// Системный `TabView(.page)` корректно различает горизонтальный свайп ленты
+/// и вертикальную прокрутку внутри дня. Держим всего три страницы вокруг
+/// выбранного дня: прошлая, текущая и следующая. После свайпа центральная
+/// страница пересобирается, поэтому память не растёт с числом дней.
 struct DayPager: View {
     @Binding var selectedDay: DayKey
-    @State private var scrolledID: DayKey?
+    @State private var anchorDay: DayKey
+    @State private var page = 1
 
-    /// Окно листания: примерно семестр в обе стороны от сегодня.
-    private var days: [DayKey] {
-        let today = ScheduleClock.today()
-        let offset = today.days(until: selectedDay)
-        let lower = max(min(offset, 0), -120)
-        let upper = min(max(offset, 0), 120)
-        return (lower...upper).map { today.adding(days: $0) }
+    init(selectedDay: Binding<DayKey>) {
+        _selectedDay = selectedDay
+        _anchorDay = State(initialValue: selectedDay.wrappedValue)
     }
 
     var body: some View {
-        ScrollView(.horizontal) {
-            LazyHStack(spacing: 0) {
-                ForEach(days, id: \.self) { day in
-                    DayPage(day: day)
-                        .containerRelativeFrame(.horizontal)
-                        .id(day)
-                }
-            }
-            .scrollTargetLayout()
+        TabView(selection: $page) {
+            DayPage(day: anchorDay.adding(days: -1)).tag(0)
+            DayPage(day: anchorDay).tag(1)
+            DayPage(day: anchorDay.adding(days: 1)).tag(2)
         }
-        .scrollTargetBehavior(.paging)
-        .scrollPosition(id: $scrolledID)
-        .scrollIndicators(.hidden)
-        .onAppear { scrolledID = selectedDay }
-        .onChange(of: scrolledID) { _, newValue in
-            if let newValue, newValue != selectedDay {
-                selectedDay = newValue
-            }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .onChange(of: page) { _, newPage in
+            guard newPage != 1 else { return }
+            let newDay = anchorDay.adding(days: newPage == 0 ? -1 : 1)
+            anchorDay = newDay
+            selectedDay = newDay
+            recenter()
         }
-        .onChange(of: selectedDay) { _, newValue in
-            if scrolledID != newValue {
-                scrolledID = newValue
-            }
+        .onChange(of: selectedDay) { _, newDay in
+            // Выбор даты в календаре тоже должен перестроить ленту.
+            guard newDay != anchorDay else { return }
+            anchorDay = newDay
+            recenter()
+        }
+    }
+
+    private func recenter() {
+        // Без отключения анимации пейджер сначала показывает старую центральную
+        // страницу и на кадр «дёргает» ленту после свайпа.
+        withTransaction(Transaction(animation: nil)) {
+            page = 1
         }
     }
 }
@@ -333,7 +330,12 @@ struct DayPage: View {
                                     .buttonStyle(.plain)
                                 }
                             case .empty(let bell, let start, let end):
-                                EmptySlotCard(bell: bell, start: start, end: end)
+                                EmptySlotCard(
+                                    bell: bell,
+                                    start: start,
+                                    end: end,
+                                    isToday: day == ScheduleClock.today()
+                                )
                             }
                         }
                     }
@@ -346,7 +348,7 @@ struct DayPage: View {
     }
 }
 
-/// Разделитель перемены.
+/// Разделитель перемены с закраской прошедшей части.
 struct BreakRow: View {
     let minutes: Int
     let start: TimeOfDay
@@ -354,45 +356,42 @@ struct BreakRow: View {
     let isToday: Bool
     @Environment(Preferences.self) private var preferences
 
-    var body: some View {
+    private var label: some View {
         HStack(spacing: 6) {
             Text("•••")
             Text(verbatim: Labels.breakDuration(minutes))
             Text("•••")
         }
         .font(.caption)
-        .foregroundStyle(.tertiary)
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 2)
-        .overlay(alignment: .leading) { progressOverlay }
     }
 
-    @ViewBuilder
-    private var progressOverlay: some View {
-        if isToday, preferences.showBreakProgress {
-            TimelineView(.periodic(from: .now, by: 60)) { context in
-                progressView(now: Self.minutes(of: context.date))
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 60)) { context in
+            let progress = isToday && preferences.showBreakProgress
+                ? TimeProgress.fractionNow(start: start, end: end, date: context.date)
+                : nil
+
+            ZStack(alignment: .leading) {
+                label.foregroundStyle(.tertiary)
+
+                if let progress {
+                    // Закрашиваем сам текст слева направо, как в оригинале.
+                    // Отдельная тонкая линия рядом с подписью почти не читалась
+                    // и визуально не показывала, сколько перемены прошло.
+                    label
+                        .foregroundStyle(Color.accentColor)
+                        .mask {
+                            GeometryReader { geometry in
+                                Rectangle()
+                                    .frame(width: geometry.size.width * progress)
+                                    .frame(maxHeight: .infinity, alignment: .leading)
+                            }
+                        }
+                }
             }
+            .padding(.vertical, 2)
         }
-    }
-
-    @ViewBuilder
-    private func progressView(now: Int) -> some View {
-        if now >= start.minutesSinceMidnight, now < end.minutesSinceMidnight {
-            GeometryReader { geometry in
-                let total = max(end.minutesSinceMidnight - start.minutesSinceMidnight, 1)
-                let passed = Double(now - start.minutesSinceMidnight) / Double(total)
-                Capsule()
-                    .fill(Color.accentColor.opacity(0.25))
-                    .frame(width: geometry.size.width * passed)
-            }
-            .frame(height: 2)
-        }
-    }
-
-    private static func minutes(of date: Date) -> Int {
-        let calendar = ScheduleClock.calendar
-        return calendar.component(.hour, from: date) * 60 + calendar.component(.minute, from: date)
     }
 }
 
@@ -401,6 +400,8 @@ struct EmptySlotCard: View {
     let bell: Int
     let start: TimeOfDay
     let end: TimeOfDay
+    let isToday: Bool
+    @Environment(Preferences.self) private var preferences
 
     var body: some View {
         HStack {
@@ -415,5 +416,12 @@ struct EmptySlotCard: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
         .background(.quaternary.opacity(0.35), in: .rect(cornerRadius: 14))
+        .overlay(alignment: .bottom) {
+            if isToday, preferences.showEmptyLessonProgress {
+                LessonProgressBar(start: start, end: end)
+                    .padding(.horizontal, 14)
+                    .padding(.bottom, 2)
+            }
+        }
     }
 }

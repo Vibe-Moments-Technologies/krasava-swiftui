@@ -32,6 +32,7 @@ final class Preferences {
         static let abbreviatedNames = "pref.abbreviatedNames"
         static let autoScroll = "pref.autoScroll"
         static let lessonProgress = "pref.lessonProgress"
+        static let emptyLessonProgress = "pref.emptyLessonProgress"
         static let breakProgress = "pref.breakProgress"
         static let calendarTwoWeeks = "pref.calendarTwoWeeks"
         static let calendarCollapsed = "pref.calendarCollapsed"
@@ -58,6 +59,10 @@ final class Preferences {
     }
     var showLessonProgress: Bool {
         didSet { defaults.set(showLessonProgress, forKey: Key.lessonProgress) }
+    }
+    /// Полоска прогресса в карточке «нет пары».
+    var showEmptyLessonProgress: Bool {
+        didSet { defaults.set(showEmptyLessonProgress, forKey: Key.emptyLessonProgress) }
     }
     var showBreakProgress: Bool {
         didSet { defaults.set(showBreakProgress, forKey: Key.breakProgress) }
@@ -86,6 +91,7 @@ final class Preferences {
         self.abbreviatedNames = defaults.object(forKey: Key.abbreviatedNames) as? Bool ?? false
         self.autoScrollToCurrent = defaults.object(forKey: Key.autoScroll) as? Bool ?? true
         self.showLessonProgress = defaults.object(forKey: Key.lessonProgress) as? Bool ?? true
+        self.showEmptyLessonProgress = defaults.object(forKey: Key.emptyLessonProgress) as? Bool ?? true
         self.showBreakProgress = defaults.object(forKey: Key.breakProgress) as? Bool ?? true
         self.calendarTwoWeeks = defaults.object(forKey: Key.calendarTwoWeeks) as? Bool ?? false
         self.calendarCollapsed = defaults.object(forKey: Key.calendarCollapsed) as? Bool ?? false

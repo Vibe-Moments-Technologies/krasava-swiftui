@@ -1329,6 +1329,22 @@
         }
       }
     },
+    "settings.emptyProgress": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогресс пустых пар"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empty period progress"
+          }
+        }
+      }
+    },
     "settings.hidden.unhide": {
       "localizations": {
         "ru": {

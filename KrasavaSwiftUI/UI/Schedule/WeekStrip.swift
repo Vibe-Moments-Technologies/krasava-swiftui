@@ -15,20 +15,12 @@ struct WeekStrip: View {
     let onSelect: (DayKey) -> Void
 
     @Environment(\.colorScheme) private var colorScheme
-    @State private var scrolledWeek: DayKey?
+    @State private var anchorMonday: DayKey?
+    @State private var page = 1
 
     private var today: DayKey { ScheduleClock.today() }
     private var selectedMonday: DayKey { selectedDay.mondayOfWeek() }
     private var weekNumber: Int { calculator.weekNumber(for: selectedDay) }
-
-    /// Понедельники в пределах примерно года в обе стороны.
-    private var weeks: [DayKey] {
-        let base = today.mondayOfWeek()
-        let offset = base.days(until: selectedMonday) / 7
-        let lower = max(min(offset, 0), -52)
-        let upper = min(max(offset, 0), 52)
-        return (lower...upper).map { base.adding(days: $0 * 7) }
-    }
 
     var body: some View {
         VStack(spacing: 6) {
@@ -50,13 +42,19 @@ struct WeekStrip: View {
 
             Spacer(minLength: 0)
 
-            VStack(spacing: 1) {
+            // Месяц и номер недели в одной строке: две строки делали
+            // мини-календарь заметно выше без новой информации.
+            HStack(spacing: 6) {
                 Text(monthTitle)
                     .font(.subheadline.weight(.semibold))
+                Text("·")
+                    .foregroundStyle(.tertiary)
                 Text(verbatim: Labels.week(weekNumber))
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
 
             Spacer(minLength: 0)
 
@@ -86,36 +84,48 @@ struct WeekStrip: View {
 
     // MARK: - Лента недель
 
+    /// Системный пейджер вместо вложенного `ScrollView`: свайп по неделям
+    /// больше не конкурирует с вертикальным списком пар ниже.
     private var weekPager: some View {
-        ScrollView(.horizontal) {
-            LazyHStack(spacing: 0) {
-                ForEach(weeks, id: \.self) { monday in
-                    VStack(spacing: 6) {
-                        weekRow(startingAt: monday)
-                        if twoWeeks {
-                            weekRow(startingAt: monday.adding(days: 7))
-                        }
-                    }
-                    .containerRelativeFrame(.horizontal)
-                    .id(monday)
-                }
-            }
-            .scrollTargetLayout()
+        let anchor = anchorMonday ?? selectedMonday
+
+        return TabView(selection: $page) {
+            weekPage(startingAt: anchor.adding(days: -7)).tag(0)
+            weekPage(startingAt: anchor).tag(1)
+            weekPage(startingAt: anchor.adding(days: 7)).tag(2)
         }
-        .scrollTargetBehavior(.paging)
-        .scrollPosition(id: $scrolledWeek)
-        .scrollIndicators(.hidden)
+        .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(height: twoWeeks ? 124 : 62)
-        .onAppear { scrolledWeek = selectedMonday }
-        .onChange(of: scrolledWeek) { _, newValue in
-            // Свайп меняет неделю, но не день внутри неё: сохраняем день недели.
-            guard let newValue else { return }
-            let weekdayOffset = selectedDay.isoWeekday() - 1
-            let day = newValue.adding(days: weekdayOffset)
-            if day != selectedDay { onSelect(day) }
+        .onAppear {
+            anchorMonday = selectedMonday
         }
-        .onChange(of: selectedMonday) { _, newValue in
-            if scrolledWeek != newValue { scrolledWeek = newValue }
+        .onChange(of: page) { _, newPage in
+            guard newPage != 1 else { return }
+            let newMonday = anchor.adding(days: newPage == 0 ? -7 : 7)
+            anchorMonday = newMonday
+            // Свайп меняет неделю, но не день внутри неё.
+            onSelect(newMonday.adding(days: selectedDay.isoWeekday() - 1))
+            recenter()
+        }
+        .onChange(of: selectedMonday) { _, newMonday in
+            guard newMonday != anchorMonday else { return }
+            anchorMonday = newMonday
+            recenter()
+        }
+    }
+
+    private func weekPage(startingAt monday: DayKey) -> some View {
+        VStack(spacing: 6) {
+            weekRow(startingAt: monday)
+            if twoWeeks {
+                weekRow(startingAt: monday.adding(days: 7))
+            }
+        }
+    }
+
+    private func recenter() {
+        withTransaction(Transaction(animation: nil)) {
+            page = 1
         }
     }
 

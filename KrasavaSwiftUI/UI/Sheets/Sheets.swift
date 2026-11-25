@@ -236,6 +236,7 @@ struct ScheduleSettingsView: View {
 
             Section {
                 Toggle("settings.lessonProgress", isOn: store.preferenceBinding(\.showLessonProgress))
+                Toggle("settings.emptyProgress", isOn: store.preferenceBinding(\.showEmptyLessonProgress))
                 Toggle("settings.breakProgress", isOn: store.preferenceBinding(\.showBreakProgress))
             } header: {
                 Text("settings.progress")

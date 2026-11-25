@@ -139,33 +139,18 @@ struct LessonProgressBar: View {
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
-            let now = Self.minutes(of: context.date)
-            bar(now: now)
-        }
-    }
-
-    @ViewBuilder
-    private func bar(now: Int) -> some View {
-        let from = start.minutesSinceMidnight
-        let to = end.minutesSinceMidnight
-
-        if to > from, now >= from, now < to {
-            let progress = Double(now - from) / Double(to - from)
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(.quaternary)
-                    Capsule()
-                        .fill(Color.accentColor)
-                        .frame(width: geometry.size.width * progress)
+            if let progress = TimeProgress.fractionNow(start: start, end: end, date: context.date) {
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(.quaternary)
+                        Capsule()
+                            .fill(Color.accentColor)
+                            .frame(width: geometry.size.width * progress)
+                    }
                 }
+                .frame(height: 2.5)
+                .padding(.top, 4)
             }
-            .frame(height: 2.5)
-            .padding(.top, 4)
         }
-    }
-
-    private static func minutes(of date: Date) -> Int {
-        let calendar = ScheduleClock.calendar
-        return calendar.component(.hour, from: date) * 60 + calendar.component(.minute, from: date)
     }
 }
